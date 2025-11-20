@@ -1,4 +1,6 @@
 import React, { useState, useMemo } from 'react';
+import { useQuery } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
 import { Sidebar, type Category } from './Sidebar';
 import PromptGrid from '@/components/prompts/PromptGrid';
 
@@ -19,16 +21,24 @@ export interface Prompt {
 }
 
 interface DirectoryContentProps {
-  initialPrompts: Prompt[];
   categories: Category[];
 }
 
 export const DirectoryContent: React.FC<DirectoryContentProps> = ({
-  initialPrompts,
   categories,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  // Fetch prompts from Convex
+  const prompts = useQuery(api.prompts.getApprovedPrompts, {
+    category: selectedCategories.length > 0 ? selectedCategories[0] : undefined,
+    search: searchQuery || undefined,
+  });
+
+  // Loading and error states
+  const isLoading = prompts === undefined;
+  const promptList = prompts || [];
 
   // Initialize from URL params
   React.useEffect(() => {
@@ -61,34 +71,17 @@ export const DirectoryContent: React.FC<DirectoryContentProps> = ({
     window.history.replaceState({}, '', newUrl);
   }, [selectedCategories, searchQuery]);
 
-  // Filter prompts based on search and category filters
+  // Client-side filtering for multiple categories (Convex query only supports one category)
   const filteredPrompts = useMemo(() => {
-    let results = initialPrompts;
-
-    // Filter by search query
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      results = results.filter((prompt) => {
-        const titleMatch = prompt.title.toLowerCase().includes(query);
-        const excerptMatch = prompt.excerpt.toLowerCase().includes(query);
-        const contentMatch = prompt.content.toLowerCase().includes(query);
-        const tagsMatch = prompt.tags.some((tag) =>
-          tag.toLowerCase().includes(query)
-        );
-
-        return titleMatch || excerptMatch || contentMatch || tagsMatch;
-      });
+    if (selectedCategories.length <= 1) {
+      return promptList;
     }
 
-    // Filter by selected categories
-    if (selectedCategories.length > 0) {
-      results = results.filter((prompt) =>
-        selectedCategories.includes(prompt.category)
-      );
-    }
-
-    return results;
-  }, [initialPrompts, searchQuery, selectedCategories]);
+    // Filter by multiple categories on client side
+    return promptList.filter((prompt: any) =>
+      selectedCategories.includes(prompt.category)
+    );
+  }, [promptList, selectedCategories]);
 
   const handleCategoryToggle = (categoryId: string) => {
     setSelectedCategories((prev) =>
@@ -119,11 +112,14 @@ export const DirectoryContent: React.FC<DirectoryContentProps> = ({
         <div className="mb-6">
           <h1 className="text-3xl font-bold mb-2">Browse Prompts</h1>
           <p className="text-muted-foreground">
-            Explore our collection of {initialPrompts.length} church ministry prompts
+            {isLoading 
+              ? 'Loading prompts...' 
+              : `Explore our collection of ${promptList.length} church ministry prompts`
+            }
           </p>
         </div>
 
-        <PromptGrid prompts={filteredPrompts} isLoading={false} />
+        <PromptGrid prompts={filteredPrompts} isLoading={isLoading} />
       </div>
     </div>
   );

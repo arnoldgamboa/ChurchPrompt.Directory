@@ -4,23 +4,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Copy, Heart, Play, TrendingUp, Eye, Calendar } from "lucide-react";
 import { useState } from "react";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { ExecutionModal } from "./ExecutionModal";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface PromptDetailProps {
-  prompt: {
-    id: string;
-    title: string;
-    content: string;
-    category: string;
-    tags: string[];
-    authorName: string;
-    authorId: string;
-    usageCount: number;
-    executionCount: number;
-    createdAt: string;
-    featured?: boolean;
-  };
-  onCopy?: () => void;
+  promptId: string;
   onSave?: () => void;
   onRun?: () => void;
   isSubscribed?: boolean;
@@ -28,8 +18,7 @@ interface PromptDetailProps {
 }
 
 export default function PromptDetail({
-  prompt,
-  onCopy,
+  promptId,
   onSave,
   onRun,
   isSubscribed = false,
@@ -39,9 +28,26 @@ export default function PromptDetail({
   const [saved, setSaved] = useState(isFavorite);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleCopy = () => {
+  // Fetch prompt data from Convex
+  const prompt = useQuery(api.prompts.getPromptById, { id: promptId as any });
+  
+  // Mutation for incrementing usage count
+  const incrementUsage = useMutation(api.prompts.incrementUsageCount);
+
+  const handleCopy = async () => {
+    if (!prompt) return;
+    
+    // Copy to clipboard
+    await navigator.clipboard.writeText(prompt.content);
+    
+    // Track usage in Convex
+    try {
+      await incrementUsage({ id: promptId as any });
+    } catch (error) {
+      console.error('Failed to track usage:', error);
+    }
+    
     setCopied(true);
-    onCopy?.();
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -55,6 +61,38 @@ export default function PromptDetail({
     onRun?.();
   };
 
+  // Loading state
+  if (prompt === undefined) {
+    return (
+      <div className="space-y-6">
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-32" />
+          <Skeleton className="h-10 w-3/4" />
+        </div>
+        <div className="flex gap-3">
+          <Skeleton className="h-10 w-32" />
+          <Skeleton className="h-10 w-24" />
+        </div>
+        <Skeleton className="h-64 w-full" />
+      </div>
+    );
+  }
+
+  // Error state - prompt not found
+  if (prompt === null) {
+    return (
+      <Card className="p-8 text-center">
+        <h2 className="text-2xl font-bold mb-2">Prompt Not Found</h2>
+        <p className="text-muted-foreground mb-4">
+          The prompt you're looking for doesn't exist or has been removed.
+        </p>
+        <Button asChild>
+          <a href="/directory">Browse All Prompts</a>
+        </Button>
+      </Card>
+    );
+  }
+
   // Format category for display
   const categoryDisplay = prompt.category
     .split("-")
@@ -62,7 +100,7 @@ export default function PromptDetail({
     .join(" ");
 
   // Format date
-  const createdDate = new Date(prompt.createdAt).toLocaleDateString("en-US", {
+  const createdDate = new Date(prompt._creationTime).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",

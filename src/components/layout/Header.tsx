@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import { useState } from "react";
+import { SignOutButton } from "@clerk/astro/react";
 
 interface HeaderProps {
   isAuthenticated?: boolean;
@@ -35,7 +36,7 @@ export default function Header({
         {/* Logo */}
         <div className="flex items-center gap-2">
           <a href="/" className="flex items-center space-x-2">
-            <span className="text-xl font-bold">ChurchPrompt.Directory</span>
+            <span className="text-xl">churchprompt.directory</span>
           </a>
         </div>
 
@@ -72,14 +73,18 @@ export default function Header({
           {isAuthenticated ? (
             <div className="flex items-center gap-3">
               <span className="text-sm text-muted-foreground">{userName}</span>
-              <Button variant="outline" size="sm">
-                Logout
-              </Button>
+              <SignOutButton>
+                <Button variant="outline" size="sm">
+                  Logout
+                </Button>
+              </SignOutButton>
             </div>
           ) : (
-            <Button variant="ghost" size="sm">
-              Login
-            </Button>
+            <a href="/sign-in">
+              <Button variant="ghost" size="sm">
+                Login
+              </Button>
+            </a>
           )}
         </div>
 
@@ -131,14 +136,18 @@ export default function Header({
                   <span className="text-sm text-muted-foreground">
                     {userName}
                   </span>
-                  <Button variant="outline" size="sm" className="w-full">
-                    Logout
-                  </Button>
+                  <SignOutButton>
+                    <Button variant="outline" size="sm" className="w-full">
+                      Logout
+                    </Button>
+                  </SignOutButton>
                 </>
               ) : (
-                <Button variant="ghost" size="sm" className="w-full">
-                  Login
-                </Button>
+                <a href="/sign-in">
+                  <Button variant="ghost" size="sm" className="w-full">
+                    Login
+                  </Button>
+                </a>
               )}
             </div>
           </nav>

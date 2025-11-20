@@ -1,19 +1,17 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
-import { DirectoryContent } from '@/components/directory/DirectoryContent';
-
-import promptsData from '@/data/prompts.json';
+import { DirectoryWithProvider } from '@/components/directory/DirectoryWithProvider';
 import categoriesData from '@/data/categories.json';
 
-const prompts = promptsData;
 const categories = categoriesData;
+const convexUrl = import.meta.env.PUBLIC_CONVEX_URL;
 ---
 
 <MainLayout title="Browse Prompts | Church Prompt Directory">
   <div class="container py-8">
-    <DirectoryContent 
-      client:load 
-      initialPrompts={prompts} 
+    <DirectoryWithProvider 
+      client:only="react"
+      convexUrl={convexUrl}
       categories={categories} 
     />
   </div>

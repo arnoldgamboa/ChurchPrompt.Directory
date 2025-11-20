@@ -1,54 +1,118 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useQuery, useMutation } from 'convex/react';
+import { useAuth } from '@clerk/astro/react';
+import { api } from '../../../convex/_generated/api';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import PromptCard from '@/components/prompts/PromptCard';
 import { Calendar, Mail, User, Clock, FileText, ExternalLink } from 'lucide-react';
 
-interface UserProfile {
-  id: string;
-  name: string;
-  email: string;
-  joinedAt: string;
-  isSubscribed: boolean;
-}
+export const ProfileContent: React.FC = () => {
+  const { userId, isLoaded } = useAuth();
+  const [ensureState, setEnsureState] = useState<'idle' | 'running' | 'finished'>('idle');
+  
+  // Fetch current user data from Convex
+  const currentUser = useQuery(api.users.getCurrentUser);
+  
+  // Fetch user's submitted prompts
+  const submittedPrompts = useQuery(
+    api.prompts.getPromptsByAuthor,
+    currentUser?.clerkId ? { authorId: currentUser.clerkId } : 'skip'
+  );
 
-interface SubmittedPrompt {
-  id: string;
-  title: string;
-  excerpt: string;
-  category: string;
-  authorName: string;
-  usageCount: number;
-  executionCount: number;
-  tags: string[];
-  status: 'pending' | 'approved' | 'rejected';
-}
+  const ensureUser = useMutation(api.users.ensureCurrentUser);
 
-interface ExecutionHistory {
-  id: string;
-  promptId: string;
-  promptTitle: string;
-  context: string;
-  results: string;
-  executedAt: string;
-}
+  useEffect(() => {
+    if (!isLoaded) return;
+    if (!userId) return;
+    if (currentUser !== null) return; // either undefined (loading) or actual data we don't want to override
+    if (currentUser === undefined) return; // wait for initial query result
+    if (ensureState === 'running' || ensureState === 'finished') return;
 
-interface ProfileContentProps {
-  user: UserProfile;
-  submittedPrompts: SubmittedPrompt[];
-  favoritePrompts: any[];
-  executionHistory: ExecutionHistory[];
-}
+    setEnsureState('running');
+    ensureUser({})
+      .then(() => {
+        console.info('ensureCurrentUser invoked for', userId);
+      })
+      .catch((err) => {
+        console.error('ensureCurrentUser failed', err);
+      })
+      .finally(() => setEnsureState('finished'));
+  }, [currentUser, ensureState, ensureUser, isLoaded, userId]);
 
-export const ProfileContent: React.FC<ProfileContentProps> = ({
-  user,
-  submittedPrompts,
-  favoritePrompts,
-  executionHistory,
-}) => {
-  const joinedDate = new Date(user.joinedAt).toLocaleDateString('en-US', {
+  console.log('ProfileContent debug:', { userId, isLoaded, currentUser, submittedPrompts });
+
+  // Loading state - wait for Clerk and initial user query
+  if (!isLoaded || currentUser === undefined) {
+    return (
+      <div className="space-y-8">
+        <Card>
+          <CardHeader>
+            <div className="flex items-center gap-4">
+              <Skeleton className="h-16 w-16 rounded-full" />
+              <div className="space-y-2">
+                <Skeleton className="h-8 w-48" />
+                <Skeleton className="h-4 w-64" />
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
+        <Skeleton className="h-96 w-full" />
+        <p className="text-center text-sm text-muted-foreground">
+          Loading profile data... (isLoaded: {isLoaded ? 'true' : 'false'}, userId: {userId || 'none'})
+        </p>
+      </div>
+    );
+  }
+
+  // User not found
+  if (!currentUser) {
+    if (ensureState === 'running') {
+      return (
+        <Card className="p-8 text-center max-w-2xl mx-auto">
+          <h2 className="text-2xl font-bold mb-2">Finalizing your profile...</h2>
+          <p className="text-muted-foreground">
+            We’re syncing your account details. This usually takes just a moment.
+          </p>
+        </Card>
+      );
+    }
+
+    return (
+      <Card className="p-8 text-center max-w-2xl mx-auto">
+        <h2 className="text-2xl font-bold mb-2">Profile Setup Required</h2>
+        {userId ? (
+          <>
+            <p className="text-muted-foreground mb-4">
+              Your account is being set up. This happens automatically on first sign-in.
+            </p>
+            <div className="text-muted-foreground mb-4">
+              <strong>Setup Steps:</strong>
+              <ol className="list-decimal list-inside text-left mt-4 space-y-2">
+                <li>Create JWT template named "convex" in Clerk Dashboard</li>
+                <li>Configure webhook to sync users to database</li>
+                <li>Sign out and sign back in</li>
+              </ol>
+              <br />
+              Once configured, your profile will load automatically.
+            </div>
+          </>
+        ) : (
+          <p className="text-muted-foreground mb-4">Please sign in to view your profile.</p>
+        )}
+        <Button asChild>
+          <a href={userId ? '/sign-out' : '/sign-in'}>
+            {userId ? 'Sign Out & Retry' : 'Sign In'}
+          </a>
+        </Button>
+      </Card>
+    );
+  }
+
+  const joinedDate = new Date(currentUser._creationTime).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -78,11 +142,11 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                 <User className="h-8 w-8 text-primary" />
               </div>
               <div>
-                <CardTitle className="text-2xl">{user.name}</CardTitle>
+                <CardTitle className="text-2xl">{currentUser.name}</CardTitle>
                 <CardDescription className="flex items-center gap-4 mt-2">
                   <span className="flex items-center gap-1">
                     <Mail className="h-4 w-4" />
-                    {user.email}
+                    {currentUser.email}
                   </span>
                   <span className="flex items-center gap-1">
                     <Calendar className="h-4 w-4" />
@@ -91,8 +155,8 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                 </CardDescription>
               </div>
             </div>
-            <Badge variant={user.isSubscribed ? 'default' : 'secondary'}>
-              {user.isSubscribed ? 'Premium Member' : 'Free Account'}
+            <Badge variant={currentUser.role === 'admin' ? 'default' : 'secondary'}>
+              {currentUser.role === 'admin' ? 'Administrator' : 'Member'}
             </Badge>
           </div>
         </CardHeader>
@@ -100,30 +164,36 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
 
       {/* Tabs */}
       <Tabs defaultValue="submitted" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="submitted">
-            Submitted Prompts ({submittedPrompts.length})
+            Submitted Prompts ({submittedPrompts?.length || 0})
           </TabsTrigger>
-          <TabsTrigger value="favorites">
-            Favorites ({favoritePrompts.length})
-          </TabsTrigger>
-          <TabsTrigger value="history">
-            Execution History ({executionHistory.length})
+          <TabsTrigger value="stats">
+            Statistics
           </TabsTrigger>
         </TabsList>
 
         {/* Submitted Prompts Tab */}
         <TabsContent value="submitted" className="mt-6">
-          {submittedPrompts.length > 0 ? (
+          {submittedPrompts && submittedPrompts.length > 0 ? (
             <div className="space-y-4">
               {submittedPrompts.map((prompt) => (
-                <div key={prompt.id} className="relative">
+                <div key={prompt._id} className="relative">
                   <div className="absolute -top-2 -right-2 z-10">
                     <Badge className={getStatusColor(prompt.status)}>
                       {prompt.status.charAt(0).toUpperCase() + prompt.status.slice(1)}
                     </Badge>
                   </div>
-                  <PromptCard prompt={prompt} />
+                  <PromptCard prompt={{
+                    id: prompt._id,
+                    title: prompt.title,
+                    excerpt: prompt.excerpt,
+                    category: prompt.category,
+                    authorName: prompt.authorName,
+                    usageCount: prompt.usageCount,
+                    executionCount: prompt.executionCount,
+                    tags: prompt.tags
+                  }} />
                 </div>
               ))}
             </div>
@@ -143,96 +213,32 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
           )}
         </TabsContent>
 
-        {/* Favorites Tab */}
-        <TabsContent value="favorites" className="mt-6">
-          {favoritePrompts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {favoritePrompts.map((prompt) => (
-                <PromptCard key={prompt.id} prompt={prompt} isFavorite={true} />
-              ))}
-            </div>
-          ) : (
+        {/* Statistics Tab */}
+        <TabsContent value="stats" className="mt-6">
+          <div className="grid gap-4 md:grid-cols-3">
             <Card>
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No Favorite Prompts</h3>
-                <p className="text-sm text-muted-foreground mb-4 text-center max-w-md">
-                  Save your favorite prompts for quick access later.
-                </p>
-                <Button asChild>
-                  <a href="/directory">Browse Prompts</a>
-                </Button>
-              </CardContent>
+              <CardHeader className="pb-3">
+                <CardDescription>Total Submitted</CardDescription>
+                <CardTitle className="text-4xl">{submittedPrompts?.length || 0}</CardTitle>
+              </CardHeader>
             </Card>
-          )}
-        </TabsContent>
-
-        {/* Execution History Tab */}
-        <TabsContent value="history" className="mt-6">
-          {executionHistory.length > 0 ? (
-            <div className="space-y-4">
-              {executionHistory.map((execution) => (
-                <Card key={execution.id}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <CardTitle className="text-lg mb-2">
-                          {execution.promptTitle}
-                        </CardTitle>
-                        <CardDescription className="flex items-center gap-2">
-                          <Clock className="h-4 w-4" />
-                          {new Date(execution.executedAt).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
-                        </CardDescription>
-                      </div>
-                      <Button variant="outline" size="sm" asChild>
-                        <a href={`/directory/${execution.promptId}`}>
-                          <ExternalLink className="h-4 w-4 mr-2" />
-                          View Prompt
-                        </a>
-                      </Button>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {execution.context && (
-                      <div>
-                        <p className="text-sm font-medium mb-1">Context:</p>
-                        <p className="text-sm text-muted-foreground italic">
-                          "{execution.context}"
-                        </p>
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-sm font-medium mb-1">Results:</p>
-                      <div className="rounded-lg border bg-muted/50 p-3 max-h-48 overflow-y-auto">
-                        <pre className="text-xs whitespace-pre-wrap font-mono">
-                          {execution.results}
-                        </pre>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
             <Card>
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <Clock className="h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No Execution History</h3>
-                <p className="text-sm text-muted-foreground mb-4 text-center max-w-md">
-                  Your prompt execution history will appear here.
-                </p>
-                <Button asChild>
-                  <a href="/directory">Browse Prompts</a>
-                </Button>
-              </CardContent>
+              <CardHeader className="pb-3">
+                <CardDescription>Approved</CardDescription>
+                <CardTitle className="text-4xl">
+                  {submittedPrompts?.filter((p) => p.status === 'approved').length || 0}
+                </CardTitle>
+              </CardHeader>
             </Card>
-          )}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardDescription>Total Usage</CardDescription>
+                <CardTitle className="text-4xl">
+                  {submittedPrompts?.reduce((sum, p) => sum + (p.usageCount || 0), 0) || 0}
+                </CardTitle>
+              </CardHeader>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>

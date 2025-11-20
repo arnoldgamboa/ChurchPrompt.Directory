@@ -1,0 +1,14 @@
+---
+import { AuthenticateWithRedirectCallback } from '@clerk/astro/react';
+import MainLayout from '@/layouts/MainLayout.astro';
+---
+
+<MainLayout title="Creating your account..." description="Please wait while we create your account">
+  <div class="flex min-h-[calc(100vh-200px)] items-center justify-center">
+    <div class="text-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+      <p class="text-muted-foreground">Completing sign-up...</p>
+    </div>
+  </div>
+  <AuthenticateWithRedirectCallback client:only="react" />
+</MainLayout>

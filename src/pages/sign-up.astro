@@ -1,0 +1,28 @@
+---
+import { SignUp as ClerkSignUp } from '@clerk/astro/react';
+import MainLayout from '@/layouts/MainLayout.astro';
+
+const title = 'Sign Up';
+const description = 'Create your Church Prompt Directory account';
+---
+
+<MainLayout title={title} description={description}>
+  <div class="min-h-[calc(100vh-200px)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-md">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold">Get Started</h1>
+        <p class="mt-2 text-muted-foreground">
+          Create an account to submit prompts and access unlimited views
+        </p>
+      </div>
+      
+      <ClerkSignUp 
+        client:only="react"
+        routing="path"
+        path="/sign-up"
+        signInUrl="/sign-in"
+        afterSignUpUrl="/directory"
+      />
+    </div>
+  </div>
+</MainLayout>
