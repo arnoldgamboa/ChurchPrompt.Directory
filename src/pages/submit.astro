@@ -1,0 +1,24 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import { SubmissionForm } from '@/components/prompts/SubmissionForm';
+
+import categoriesData from '@/data/categories.json';
+
+const categories = categoriesData.map(cat => ({
+  id: cat.id,
+  name: cat.name
+}));
+---
+
+<MainLayout title="Submit a Prompt | Church Prompt Directory">
+  <div class="container py-8">
+    <div class="max-w-2xl mx-auto mb-8 text-center">
+      <h1 class="text-4xl font-bold mb-4">Share Your Expertise</h1>
+      <p class="text-lg text-muted-foreground">
+        Help fellow ministry leaders by submitting your best AI prompts. Every submission helps strengthen our community.
+      </p>
+    </div>
+    
+    <SubmissionForm client:load categories={categories} />
+  </div>
+</MainLayout>

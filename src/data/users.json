@@ -1,0 +1,137 @@
+[
+  {
+    "id": "user-1",
+    "name": "Rev. Sarah Chen",
+    "email": "sarah.chen@faithchurch.org",
+    "role": "user",
+    "isSubscribed": true,
+    "joinedAt": "2024-06-15T09:00:00Z",
+    "promptViewCount": 0
+  },
+  {
+    "id": "user-2",
+    "name": "Pastor Michael Rodriguez",
+    "email": "michael.r@gracechapel.com",
+    "role": "user",
+    "isSubscribed": true,
+    "joinedAt": "2024-07-02T14:30:00Z",
+    "promptViewCount": 0
+  },
+  {
+    "id": "user-3",
+    "name": "Emily Thompson",
+    "email": "emily.thompson@communitychurch.net",
+    "role": "user",
+    "isSubscribed": true,
+    "joinedAt": "2024-05-20T11:15:00Z",
+    "promptViewCount": 0
+  },
+  {
+    "id": "user-4",
+    "name": "David Kim",
+    "email": "david.kim@newlifechurch.org",
+    "role": "user",
+    "isSubscribed": true,
+    "joinedAt": "2024-08-10T10:45:00Z",
+    "promptViewCount": 0
+  },
+  {
+    "id": "user-5",
+    "name": "Jordan Williams",
+    "email": "jordan.w@crossroadschurch.com",
+    "role": "user",
+    "isSubscribed": true,
+    "joinedAt": "2024-06-28T16:20:00Z",
+    "promptViewCount": 0
+  },
+  {
+    "id": "user-6",
+    "name": "Rev. Patricia Anderson",
+    "email": "patricia.anderson@trinityumc.org",
+    "role": "user",
+    "isSubscribed": true,
+    "joinedAt": "2024-07-18T08:50:00Z",
+    "promptViewCount": 0
+  },
+  {
+    "id": "user-7",
+    "name": "James Martinez",
+    "email": "james.martinez@hopecc.org",
+    "role": "user",
+    "isSubscribed": true,
+    "joinedAt": "2024-05-05T13:40:00Z",
+    "promptViewCount": 0
+  },
+  {
+    "id": "user-8",
+    "name": "Dr. Rebecca Foster",
+    "email": "rebecca.foster@bibleteach.org",
+    "role": "user",
+    "isSubscribed": true,
+    "joinedAt": "2024-06-01T09:25:00Z",
+    "promptViewCount": 0
+  },
+  {
+    "id": "user-9",
+    "name": "Hannah Lee",
+    "email": "hannah.lee@missionheart.org",
+    "role": "user",
+    "isSubscribed": false,
+    "joinedAt": "2024-08-22T15:10:00Z",
+    "promptViewCount": 0
+  },
+  {
+    "id": "user-10",
+    "name": "Rev. Thomas Wright",
+    "email": "thomas.wright@firstchurch.com",
+    "role": "admin",
+    "isSubscribed": true,
+    "joinedAt": "2024-04-01T08:00:00Z",
+    "promptViewCount": 0
+  },
+  {
+    "id": "user-11",
+    "name": "Carlos Hernandez",
+    "email": "carlos.h@outre achministry.org",
+    "role": "user",
+    "isSubscribed": true,
+    "joinedAt": "2024-07-25T11:30:00Z",
+    "promptViewCount": 0
+  },
+  {
+    "id": "user-12",
+    "name": "Marcus Johnson",
+    "email": "marcus.johnson@worshipleader.net",
+    "role": "user",
+    "isSubscribed": false,
+    "joinedAt": "2024-09-05T14:55:00Z",
+    "promptViewCount": 0
+  },
+  {
+    "id": "user-13",
+    "name": "Lisa Roberts",
+    "email": "lisa.roberts@kidsministry.org",
+    "role": "user",
+    "isSubscribed": true,
+    "joinedAt": "2024-06-12T10:20:00Z",
+    "promptViewCount": 0
+  },
+  {
+    "id": "user-14",
+    "name": "Michelle Carter",
+    "email": "michelle.carter@womensministry.com",
+    "role": "user",
+    "isSubscribed": true,
+    "joinedAt": "2024-07-08T09:15:00Z",
+    "promptViewCount": 0
+  },
+  {
+    "id": "user-15",
+    "name": "Admin User",
+    "email": "admin@churchprompts.com",
+    "role": "admin",
+    "isSubscribed": true,
+    "joinedAt": "2024-01-01T00:00:00Z",
+    "promptViewCount": 0
+  }
+]

@@ -1,0 +1,84 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Home, Search, ArrowLeft, FileQuestion } from 'lucide-react';
+---
+
+<MainLayout title="Page Not Found | Church Prompt Directory">
+  <div class="container py-16">
+    <div class="max-w-2xl mx-auto">
+      <Card>
+        <CardContent className="py-12 text-center">
+          <FileQuestion className="h-24 w-24 text-muted-foreground/50 mx-auto mb-6" />
+          
+          <h1 class="text-4xl font-bold mb-3">404 - Page Not Found</h1>
+          <p class="text-lg text-muted-foreground mb-8">
+            Sorry, we couldn't find the page you're looking for. It may have been moved or deleted.
+          </p>
+
+          <!-- Search -->
+          <div class="max-w-md mx-auto mb-8">
+            <form action="/directory" method="get" class="flex gap-2">
+              <Input 
+                type="text" 
+                name="q" 
+                placeholder="Search for prompts..." 
+                className="flex-1"
+              />
+              <Button type="submit" variant="outline">
+                <Search className="h-4 w-4 mr-2" />
+                Search
+              </Button>
+            </form>
+            <p class="text-xs text-muted-foreground mt-2">
+              Try searching for what you need in our prompt directory
+            </p>
+          </div>
+
+          <!-- Navigation Options -->
+          <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button asChild size="lg">
+              <a href="/">
+                <Home className="h-4 w-4 mr-2" />
+                Go Home
+              </a>
+            </Button>
+            <Button variant="outline" size="lg" asChild>
+              <a href="/directory">
+                <Search className="h-4 w-4 mr-2" />
+                Browse Prompts
+              </a>
+            </Button>
+            <Button variant="ghost" size="lg" onClick={() => window.history.back()}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Go Back
+            </Button>
+          </div>
+
+          <!-- Helpful Links -->
+          <div class="mt-12 pt-8 border-t">
+            <h2 class="text-sm font-semibold mb-4 text-muted-foreground">
+              Popular Pages
+            </h2>
+            <div class="grid grid-cols-2 gap-3 text-sm">
+              <a href="/directory" class="text-primary hover:underline">
+                Browse Directory
+              </a>
+              <a href="/submit" class="text-primary hover:underline">
+                Submit Prompt
+              </a>
+              <a href="/subscribe" class="text-primary hover:underline">
+                View Pricing
+              </a>
+              <a href="/profile" class="text-primary hover:underline">
+                My Profile
+              </a>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  </div>
+</MainLayout>

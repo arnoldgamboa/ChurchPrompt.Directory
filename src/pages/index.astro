@@ -1,16 +1,176 @@
 ---
+import MainLayout from "@/layouts/MainLayout.astro";
+import PromptGrid from "@/components/prompts/PromptGrid";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import prompts from "@/data/prompts.json";
+import categories from "@/data/categories.json";
+import { 
+  BookOpen, 
+  FileText, 
+  Heart, 
+  Share2, 
+  Calendar, 
+  GraduationCap,
+  ArrowRight,
+  Sparkles
+} from "lucide-react";
 
+// Map icon names to actual components
+const iconMap: Record<string, any> = {
+  BookOpen,
+  FileText,
+  Heart,
+  Share2,
+  Calendar,
+  GraduationCap,
+};
+
+// Get featured prompts (first 6)
+const featuredPrompts = prompts.slice(0, 6).map(p => ({
+  id: p.id,
+  title: p.title,
+  excerpt: p.excerpt,
+  category: p.category,
+  authorName: p.authorName,
+  usageCount: p.usageCount,
+  executionCount: p.executionCount,
+  tags: p.tags,
+}));
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<MainLayout
+  title="Church Prompt Directory - AI Prompts for Ministry"
+  description="Discover, share, and utilize AI prompts designed specifically for church ministry tasks"
+>
+  <!-- Hero Section -->
+  <section class="gradient-subtle border-b">
+    <div class="container section">
+      <div class="max-w-4xl mx-auto text-center space-y-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-2">
+          <Sparkles className="h-4 w-4" />
+          <span>AI-Powered Ministry Tools</span>
+        </div>
+        <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+          AI Prompts for Church Ministry
+        </h1>
+        <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
+          Discover, share, and utilize proven AI prompts designed specifically for church leaders, pastors, and ministry staff. Save time and enhance your ministry with community-driven content.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+          <Button size="lg" asChild>
+            <a href="/directory">
+              Browse Prompts
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </a>
+          </Button>
+          <Button size="lg" variant="outline" asChild>
+            <a href="/subscribe">Subscribe for Full Access</a>
+          </Button>
+        </div>
+        <p class="text-sm text-muted-foreground pt-2">
+          Free account: Browse and copy all prompts • Subscribed: Run prompts in-app with AI
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Section -->
+  <section class="section border-b">
+    <div class="container">
+      <div class="max-w-3xl mx-auto text-center mb-12">
+        <h2 class="text-3xl font-bold tracking-tight mb-4">
+          Browse by Category
+        </h2>
+        <p class="text-lg text-muted-foreground">
+          Find prompts organized by ministry area to quickly discover what you need
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {categories.map((category) => {
+          const IconComponent = iconMap[category.icon];
+          return (
+            <a href={`/directory?category=${category.id}`} class="block group">
+              <Card className="card-hover h-full">
+                <CardHeader>
+                  <div class="flex items-center gap-3 mb-2">
+                    {IconComponent && (
+                      <div class="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                        <IconComponent className="h-5 w-5" />
+                      </div>
+                    )}
+                    <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                      {category.name}
+                    </CardTitle>
+                  </div>
+                  <CardDescription className="line-clamp-2">
+                    {category.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p class="text-sm text-muted-foreground">
+                    {category.promptCount} prompts available
+                  </p>
+                </CardContent>
+              </Card>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Prompts Section -->
+  <section class="section bg-muted/30">
+    <div class="container">
+      <div class="max-w-3xl mx-auto text-center mb-12">
+        <h2 class="text-3xl font-bold tracking-tight mb-4">
+          Featured Prompts
+        </h2>
+        <p class="text-lg text-muted-foreground">
+          Popular prompts from our community to get you started
+        </p>
+      </div>
+      
+      <PromptGrid
+        client:load
+        prompts={featuredPrompts}
+        onCopy={(id) => console.log('Copy:', id)}
+        onSave={(id) => console.log('Save:', id)}
+        onView={(id) => window.location.href = `/directory/${id}`}
+      />
+
+      <div class="text-center mt-12">
+        <Button size="lg" variant="outline" asChild>
+          <a href="/directory">
+            View All Prompts
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </a>
+        </Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="section border-t">
+    <div class="container">
+      <div class="max-w-3xl mx-auto text-center space-y-6">
+        <h2 class="text-3xl font-bold tracking-tight">
+          Ready to enhance your ministry with AI?
+        </h2>
+        <p class="text-lg text-muted-foreground">
+          Join our community of church leaders sharing and discovering AI prompts
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+          <Button size="lg" asChild>
+            <a href="/submit">Submit Your Prompt</a>
+          </Button>
+          <Button size="lg" variant="outline" asChild>
+            <a href="/subscribe">Subscribe Now</a>
+          </Button>
+        </div>
+      </div>
+    </div>
+  </section>
+</MainLayout>

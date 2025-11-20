@@ -1,0 +1,250 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Check, X, Sparkles, Heart, Clock, Zap, BookOpen, Users } from 'lucide-react';
+
+const pricingTiers = [
+  {
+    name: 'Free',
+    price: '$0',
+    period: 'forever',
+    description: 'Perfect for getting started with AI prompts',
+    popular: false,
+    features: [
+      { name: 'Browse all prompts', included: true },
+      { name: 'Copy prompts to clipboard', included: true },
+      { name: 'Search and filter', included: true },
+      { name: 'Submit prompts for review', included: true },
+      { name: 'AI prompt execution', included: false },
+      { name: 'Save favorite prompts', included: false },
+      { name: 'Execution history', included: false },
+      { name: 'Priority support', included: false },
+    ],
+    cta: 'Get Started',
+    ctaVariant: 'outline' as const,
+  },
+  {
+    name: 'Premium',
+    price: '$19',
+    period: 'per month',
+    description: 'Unlock the full power of AI-assisted ministry',
+    popular: true,
+    features: [
+      { name: 'Browse all prompts', included: true },
+      { name: 'Copy prompts to clipboard', included: true },
+      { name: 'Search and filter', included: true },
+      { name: 'Submit prompts for review', included: true },
+      { name: 'AI prompt execution', included: true },
+      { name: 'Save favorite prompts', included: true },
+      { name: 'Execution history', included: true },
+      { name: 'Priority support', included: true },
+    ],
+    cta: 'Start Free Trial',
+    ctaVariant: 'default' as const,
+  },
+];
+
+const benefits = [
+  {
+    icon: Sparkles,
+    title: 'AI Prompt Execution',
+    description: 'Run prompts directly in the app with our integrated AI engine. No need to copy and paste into external tools.',
+    premium: true,
+  },
+  {
+    icon: Heart,
+    title: 'Save Favorites',
+    description: 'Bookmark your most-used prompts for quick access. Build your personal library of go-to resources.',
+    premium: true,
+  },
+  {
+    icon: Clock,
+    title: 'Execution History',
+    description: 'Access past AI generations with context and results. Never lose track of your previous work.',
+    premium: true,
+  },
+  {
+    icon: Zap,
+    title: 'Priority Support',
+    description: 'Get faster response times and dedicated assistance from our support team.',
+    premium: true,
+  },
+  {
+    icon: BookOpen,
+    title: 'Full Prompt Library',
+    description: 'Browse and search through our entire collection of ministry-focused AI prompts.',
+    premium: false,
+  },
+  {
+    icon: Users,
+    title: 'Community Contributions',
+    description: 'Submit your own prompts to help fellow ministry leaders and grow the community.',
+    premium: false,
+  },
+];
+---
+
+<MainLayout title="Subscription Plans | Church Prompt Directory">
+  <div class="container py-12">
+    <!-- Header -->
+    <div class="max-w-3xl mx-auto text-center mb-12">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">
+        Choose Your Plan
+      </h1>
+      <p class="text-lg text-muted-foreground">
+        Start free and upgrade anytime to unlock AI-powered features that streamline your ministry work.
+      </p>
+    </div>
+
+    <!-- Pricing Tiers -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-16">
+      {pricingTiers.map((tier) => (
+        <Card className={`relative ${tier.popular ? 'border-primary shadow-lg' : ''}`}>
+          {tier.popular && (
+            <div class="absolute -top-4 left-1/2 -translate-x-1/2">
+              <Badge className="bg-primary text-primary-foreground px-4 py-1">
+                Most Popular
+              </Badge>
+            </div>
+          )}
+          
+          <CardHeader className="text-center pb-8 pt-8">
+            <CardTitle className="text-2xl mb-2">{tier.name}</CardTitle>
+            <div class="mb-2">
+              <span class="text-5xl font-bold">{tier.price}</span>
+              <span class="text-muted-foreground ml-2">/ {tier.period}</span>
+            </div>
+            <CardDescription className="text-base">{tier.description}</CardDescription>
+          </CardHeader>
+
+          <CardContent className="space-y-6">
+            <div class="space-y-3">
+              {tier.features.map((feature) => (
+                <div class="flex items-start gap-3">
+                  {feature.included ? (
+                    <Check className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                  ) : (
+                    <X className="h-5 w-5 text-muted-foreground/40 shrink-0 mt-0.5" />
+                  )}
+                  <span class={`text-sm ${feature.included ? '' : 'text-muted-foreground'}`}>
+                    {feature.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <Button 
+              variant={tier.ctaVariant}
+              className="w-full"
+              size="lg"
+            >
+              {tier.cta}
+            </Button>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+
+    <!-- Benefits Section -->
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-10">
+        <h2 class="text-3xl font-bold mb-3">What You'll Get</h2>
+        <p class="text-muted-foreground">
+          Powerful features designed specifically for church ministry leaders
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {benefits.map((benefit) => {
+          const IconComponent = benefit.icon;
+          return (
+            <Card className="relative overflow-hidden">
+              {benefit.premium && (
+                <div class="absolute top-3 right-3">
+                  <Badge variant="secondary" className="text-xs">
+                    Premium
+                  </Badge>
+                </div>
+              )}
+              
+              <CardHeader>
+                <div class="flex items-center gap-3 mb-2">
+                  <div class={`p-2 rounded-lg ${benefit.premium ? 'bg-primary/10 text-primary' : 'bg-muted'}`}>
+                    <IconComponent className="h-5 w-5" />
+                  </div>
+                  <CardTitle className="text-lg">{benefit.title}</CardTitle>
+                </div>
+                <CardDescription>{benefit.description}</CardDescription>
+              </CardHeader>
+            </Card>
+          );
+        })}
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="max-w-3xl mx-auto mt-16">
+      <h2 class="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
+      
+      <div class="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Can I cancel anytime?</CardTitle>
+            <CardDescription>
+              Yes! You can cancel your subscription at any time. You'll retain access to premium features until the end of your billing period.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Is there a free trial?</CardTitle>
+            <CardDescription>
+              Yes! Premium subscriptions include a 14-day free trial. No credit card required to start.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">What AI models do you use?</CardTitle>
+            <CardDescription>
+              We use state-of-the-art language models optimized for church ministry contexts. Premium members get priority access and faster processing.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Can I share my account?</CardTitle>
+            <CardDescription>
+              Individual subscriptions are for single users. We offer team plans for churches with multiple staff members. Contact us for pricing.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    </div>
+
+    <!-- Final CTA -->
+    <div class="max-w-2xl mx-auto mt-16 text-center">
+      <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+        <CardContent className="py-12">
+          <h2 class="text-2xl font-bold mb-3">Ready to Transform Your Ministry?</h2>
+          <p class="text-muted-foreground mb-6">
+            Join hundreds of ministry leaders using AI to work smarter, not harder.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button size="lg">
+              Start Free Trial
+            </Button>
+            <Button variant="outline" size="lg" asChild>
+              <a href="/directory">Browse Prompts</a>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  </div>
+</MainLayout>

@@ -1,5 +1,5 @@
 {
-  "name": "apparent-accretion",
+  "name": "church-prompt-directory",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -9,6 +9,31 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.15.9"
-  }
+    "@astrojs/db": "^0.18.2",
+    "@astrojs/react": "^4.4.2",
+    "@astrojs/tailwind": "^6.0.2",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-tabs": "^1.1.13",
+    "@radix-ui/react-tooltip": "^1.2.8",
+    "@types/react": "^19.2.6",
+    "@types/react-dom": "^19.2.3",
+    "astro": "^5.15.9",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.554.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwind-merge": "^3.4.0",
+    "tailwindcss": "^3.4.18",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "description": "```sh npm create astro@latest -- --template minimal ```",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

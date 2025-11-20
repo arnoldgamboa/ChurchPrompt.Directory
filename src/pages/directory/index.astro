@@ -1,0 +1,20 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import { DirectoryContent } from '@/components/directory/DirectoryContent';
+
+import promptsData from '@/data/prompts.json';
+import categoriesData from '@/data/categories.json';
+
+const prompts = promptsData;
+const categories = categoriesData;
+---
+
+<MainLayout title="Browse Prompts | Church Prompt Directory">
+  <div class="container py-8">
+    <DirectoryContent 
+      client:load 
+      initialPrompts={prompts} 
+      categories={categories} 
+    />
+  </div>
+</MainLayout>

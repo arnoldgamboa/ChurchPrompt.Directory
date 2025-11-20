@@ -1,0 +1,48 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import "../styles/globals.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  isAuthenticated?: boolean;
+  isAdmin?: boolean;
+  userName?: string;
+}
+
+const {
+  title,
+  description,
+  isAuthenticated = false,
+  isAdmin = false,
+  userName = "",
+} = Astro.props;
+
+const currentPath = Astro.url.pathname;
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- Skip to main content link for accessibility -->
+  <a 
+    href="#main-content" 
+    class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md"
+  >
+    Skip to main content
+  </a>
+  
+  <div class="flex min-h-screen flex-col">
+    <Header
+      client:load
+      isAuthenticated={isAuthenticated}
+      isAdmin={isAdmin}
+      userName={userName}
+      currentPath={currentPath}
+    />
+    <main id="main-content" class="flex-1">
+      <slot />
+    </main>
+    <Footer client:load />
+  </div>
+</BaseLayout>

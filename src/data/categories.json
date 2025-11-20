@@ -1,0 +1,44 @@
+[
+  {
+    "id": "sermon-preparation",
+    "name": "Sermon Preparation & Research",
+    "description": "AI prompts for developing sermons, studying scripture, creating outlines, finding illustrations, and planning sermon series. Perfect for pastors and teaching pastors preparing weekly messages.",
+    "icon": "BookOpen",
+    "promptCount": 9
+  },
+  {
+    "id": "administrative",
+    "name": "Administrative Tasks & Communications",
+    "description": "Streamline church operations with prompts for newsletters, emails, policies, budgets, reports, and internal communications. Essential for church administrators and office staff.",
+    "icon": "FileText",
+    "promptCount": 15
+  },
+  {
+    "id": "pastoral-care",
+    "name": "Pastoral Care & Counseling Guidance",
+    "description": "Compassionate prompts for pastoral care emails, counseling preparation, crisis response, grief support, weddings, funerals, and spiritual guidance. For pastors providing care to their congregation.",
+    "icon": "Heart",
+    "promptCount": 12
+  },
+  {
+    "id": "social-media",
+    "name": "Social Media & Marketing Content",
+    "description": "Create engaging social media posts, campaigns, graphics ideas, and digital content for Instagram, Facebook, TikTok, and more. For communications teams and social media managers.",
+    "icon": "Share2",
+    "promptCount": 8
+  },
+  {
+    "id": "event-planning",
+    "name": "Event Planning & Coordination",
+    "description": "Plan retreats, conferences, outreach events, VBS, Christmas services, and special gatherings with detailed schedules, logistics, and activities. For event coordinators and ministry leaders.",
+    "icon": "Calendar",
+    "promptCount": 7
+  },
+  {
+    "id": "teaching",
+    "name": "Teaching & Curriculum Development",
+    "description": "Design Bible studies, small group curricula, children's lessons, membership classes, and discipleship materials. For educators, small group leaders, and curriculum developers.",
+    "icon": "GraduationCap",
+    "promptCount": 9
+  }
+]

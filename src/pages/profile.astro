@@ -1,0 +1,119 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import { ProfileContent } from '@/components/profile/ProfileContent';
+
+import usersData from '@/data/users.json';
+import promptsData from '@/data/prompts.json';
+
+// Mock current user (in a real app, this would come from auth)
+const currentUser = usersData[0]; // Rev. Sarah Chen
+
+// Mock submitted prompts with status
+const submittedPrompts = [
+  {
+    ...promptsData[0],
+    status: 'approved' as const,
+  },
+  {
+    ...promptsData[4],
+    status: 'pending' as const,
+  },
+  {
+    id: 'submitted-1',
+    title: 'Youth Group Icebreaker Activities',
+    excerpt: 'Generate creative icebreaker activities for youth group meetings that foster connection and spiritual growth.',
+    category: 'teaching',
+    authorName: currentUser.name,
+    usageCount: 0,
+    executionCount: 0,
+    tags: ['youth', 'activities', 'community'],
+    status: 'rejected' as const,
+  },
+];
+
+// Mock favorite prompts
+const favoritePrompts = [
+  promptsData[1],
+  promptsData[5],
+  promptsData[10],
+  promptsData[15],
+];
+
+// Mock execution history
+const executionHistory = [
+  {
+    id: 'exec-1',
+    promptId: promptsData[0].id,
+    promptTitle: promptsData[0].title,
+    context: 'Romans 12:1-8',
+    results: `SERMON OUTLINE - "Expository Sermon Outline Creator"
+
+I. INTRODUCTION
+   - Opening illustration: Consider the example of a lighthouse guiding ships safely to shore
+   - Hook: "Have you ever felt lost in the storms of life?"
+   - Thesis: God's Word serves as our lighthouse in turbulent times
+
+II. MAIN POINT 1: The Foundation of Faith
+   - Scripture: Hebrews 11:1
+   - Explanation: Faith is the substance of things hoped for
+   - Application: Trust God even when you cannot see the outcome
+   - Illustration: Story of Abraham's journey
+
+III. CONCLUSION
+   - Recap the main points
+   - Call to action: Choose one area to grow in this week
+   - Closing prayer`,
+    executedAt: '2024-11-15T14:30:00Z',
+  },
+  {
+    id: 'exec-2',
+    promptId: promptsData[1].id,
+    promptTitle: promptsData[1].title,
+    context: 'Follow-up after hospital visit with Mrs. Johnson',
+    results: `Subject: Thinking of You During This Time
+
+Dear Mrs. Johnson,
+
+I hope this message finds you with peace in your heart, even during this challenging season. I've been keeping you in my prayers and wanted to reach out personally.
+
+I can only imagine how difficult your recovery must be for you right now. Please know that you are not alone—our church family is here to support you, and more importantly, God is with you every step of the way.
+
+I'm reminded of Psalm 34:18: "The Lord is close to the brokenhearted and saves those who are crushed in spirit." Even in our deepest valleys, His presence remains constant.
+
+Holding you in prayer,
+Rev. Sarah Chen`,
+    executedAt: '2024-11-12T09:15:00Z',
+  },
+  {
+    id: 'exec-3',
+    promptId: promptsData[2].id,
+    promptTitle: promptsData[2].title,
+    context: '',
+    results: `WEEKLY NEWSLETTER - November 17, 2024
+
+UPCOMING EVENTS
+• Sunday Service - 10:00 AM
+• Wednesday Bible Study - 7:00 PM
+• Youth Group - Friday 6:30 PM
+
+COMMUNITY ANNOUNCEMENTS
+Join us this Sunday for our special Thanksgiving service as we reflect on God's blessings throughout the year.
+
+PRAYER REQUESTS
+Please keep the Johnson family in your prayers as Mrs. Johnson recovers from surgery.`,
+    executedAt: '2024-11-08T16:45:00Z',
+  },
+];
+---
+
+<MainLayout title="My Profile | Church Prompt Directory">
+  <div class="container py-8 max-w-6xl">
+    <ProfileContent
+      client:load
+      user={currentUser}
+      submittedPrompts={submittedPrompts}
+      favoritePrompts={favoritePrompts}
+      executionHistory={executionHistory}
+    />
+  </div>
+</MainLayout>
