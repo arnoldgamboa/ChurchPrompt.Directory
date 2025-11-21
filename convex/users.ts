@@ -113,36 +113,47 @@ export const ensureCurrentUser = mutation({
     email: v.optional(v.string()),
   },
   handler: async ({ db, auth }, args) => {
-    const identity = await auth.getUserIdentity();
-    console.log('[ensureCurrentUser] identity:', JSON.stringify(identity));
-    if (!identity) {
-      console.error('[ensureCurrentUser] No identity - user not authenticated');
-      throw new Error("Not authenticated");
+    try {
+      const identity = await auth.getUserIdentity();
+      console.log('[ensureCurrentUser] identity:', JSON.stringify(identity));
+      if (!identity) {
+        console.error('[ensureCurrentUser] No identity - user not authenticated');
+        throw new Error("Not authenticated");
+      }
+
+      const clerkId = identity.subject;
+      const existing = await db
+        .query("users")
+        .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkId))
+        .first();
+      if (existing) {
+        console.log('[ensureCurrentUser] User exists, returning:', existing._id);
+        return existing;
+      }
+
+      const now = Date.now();
+      const name = args.name ?? identity.name ?? identity.nickname ?? "User";
+      const email = args.email ?? identity.email ?? "";
+      
+      console.log('[ensureCurrentUser] Creating new user:', { clerkId, name, email });
+      
+      const doc = {
+        clerkId,
+        name,
+        email,
+        role: "user",
+        promptViewCount: 0,
+        createdAt: now,
+        updatedAt: now,
+      };
+
+      const _id = await db.insert("users", doc);
+      console.log('[ensureCurrentUser] User created with _id:', _id);
+      return { _id, ...doc };
+    } catch (error: any) {
+      console.error('[ensureCurrentUser] Error:', error.message, error.stack);
+      throw error;
     }
-
-    const clerkId = identity.subject;
-    const existing = await db
-      .query("users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkId))
-      .first();
-    if (existing) return existing;
-
-    const now = Date.now();
-    const name = args.name ?? identity.name ?? identity.nickname ?? "User";
-    const email = args.email ?? identity.email ?? "";
-    const doc = {
-      clerkId,
-      name,
-      email,
-      role: "user",
-      isSubscribed: false,
-      promptViewCount: 0,
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    const _id = await db.insert("users", doc);
-    return { _id, ...doc };
   },
 });
 
