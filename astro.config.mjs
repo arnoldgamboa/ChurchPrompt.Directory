@@ -8,6 +8,10 @@ import clerk from '@clerk/astro';
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
+  server: {
+    port: parseInt(process.env.PORT) || 4321,
+    host: true, // ensures 0.0.0.0
+  },
   adapter: node({ mode: 'standalone' }),
   integrations: [
     react(),
