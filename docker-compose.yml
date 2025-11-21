@@ -1,11 +1,11 @@
-version: '3.8'
-
+services:
 services:
   web:
     build: .
     image: church-prompt-directory:latest
+    # Map this host port for the container's 3000; change HOST_PORT or set to 0 for automatic ephemeral mapping
     ports:
-      - "3000:3000"
+      - "${HOST_PORT:-3000}:3000"
     environment:
       - NODE_ENV=production
       - PORT=3000
