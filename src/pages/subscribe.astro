@@ -1,248 +1,350 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { buttonVariants } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Check, X, Sparkles, Heart, Clock, Zap, BookOpen, Users } from 'lucide-react';
-
-const pricingTiers = [
-  {
-    name: 'Free',
-    price: '$0',
-    period: 'forever',
-    description: 'Perfect for getting started with AI prompts',
-    popular: false,
-    features: [
-      { name: 'Browse all prompts', included: true },
-      { name: 'Copy prompts to clipboard', included: true },
-      { name: 'Search and filter', included: true },
-      { name: 'Submit prompts for review', included: true },
-      { name: 'AI prompt execution', included: false },
-      { name: 'Save favorite prompts', included: false },
-      { name: 'Execution history', included: false },
-      { name: 'Priority support', included: false },
-    ],
-    cta: 'Get Started',
-    ctaVariant: 'outline' as const,
-  },
-  {
-    name: 'Premium',
-    price: '$19',
-    period: 'per month',
-    description: 'Unlock the full power of AI-assisted ministry',
-    popular: true,
-    features: [
-      { name: 'Browse all prompts', included: true },
-      { name: 'Copy prompts to clipboard', included: true },
-      { name: 'Search and filter', included: true },
-      { name: 'Submit prompts for review', included: true },
-      { name: 'AI prompt execution', included: true },
-      { name: 'Save favorite prompts', included: true },
-      { name: 'Execution history', included: true },
-      { name: 'Priority support', included: true },
-    ],
-    cta: 'Start Free Trial',
-    ctaVariant: 'default' as const,
-  },
-];
-
-const benefits = [
-  {
-    icon: Sparkles,
-    title: 'AI Prompt Execution',
-    description: 'Run prompts directly in the app with our integrated AI engine. No need to copy and paste into external tools.',
-    premium: true,
-  },
-  {
-    icon: Heart,
-    title: 'Save Favorites',
-    description: 'Bookmark your most-used prompts for quick access. Build your personal library of go-to resources.',
-    premium: true,
-  },
-  {
-    icon: Clock,
-    title: 'Execution History',
-    description: 'Access past AI generations with context and results. Never lose track of your previous work.',
-    premium: true,
-  },
-  {
-    icon: Zap,
-    title: 'Priority Support',
-    description: 'Get faster response times and dedicated assistance from our support team.',
-    premium: true,
-  },
-  {
-    icon: BookOpen,
-    title: 'Full Prompt Library',
-    description: 'Browse and search through our entire collection of ministry-focused AI prompts.',
-    premium: false,
-  },
-  {
-    icon: Users,
-    title: 'Community Contributions',
-    description: 'Submit your own prompts to help fellow ministry leaders and grow the community.',
-    premium: false,
-  },
-];
+import { 
+  Sparkles, 
+  Zap, 
+  Crown, 
+  Lock, 
+  Bell,
+  ArrowRight,
+  Check,
+  X
+} from 'lucide-react';
 ---
 
-<MainLayout title="Subscription Plans | Church Prompt Directory">
-  <div class="container py-12">
-    <!-- Header -->
-    <div class="max-w-3xl mx-auto text-center mb-12">
-      <h1 class="text-4xl md:text-5xl font-bold mb-4">
-        Choose Your Plan
-      </h1>
-      <p class="text-lg text-muted-foreground">
-        Start free and upgrade anytime to unlock AI-powered features that streamline your ministry work.
-      </p>
+<MainLayout
+  title="Premium Features Coming Soon"
+  description="Get early access to exclusive features and unlock the full potential of Church Prompt Directory."
+>
+  <div class="relative overflow-hidden">
+    <!-- Hero Section with Gradient Background -->
+    <div class="relative bg-gradient-to-br from-primary/5 via-background to-primary/10 py-24">
+      <div class="container max-w-4xl text-center">
+        <Badge variant="secondary" className="mb-4 px-4 py-1.5">
+          <Sparkles className="mr-2 h-3.5 w-3.5" />
+          Coming Soon
+        </Badge>
+        
+        <h1 class="text-5xl font-bold tracking-tight mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          Premium Features<br />Are On The Way
+        </h1>
+        
+        <p class="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+          We're building something special. Get ready for advanced AI prompts, exclusive tools, and features designed to supercharge your ministry.
+        </p>
+
+        <!-- Notify Me Button -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <a href="/sign-in" class={buttonVariants({ size: 'lg', className: 'group' })}>
+            <Bell className="mr-2 h-5 w-5" />
+            Notify Me When It Launches
+            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+          </a>
+          <p class="text-sm text-muted-foreground">
+            Join the waitlist • No credit card required
+          </p>
+        </div>
+      </div>
     </div>
 
-    <!-- Pricing Tiers -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-16">
-      {pricingTiers.map((tier) => (
-        <Card className={`relative ${tier.popular ? 'border-primary shadow-lg' : ''}`}>
-          {tier.popular && (
-            <div class="absolute -top-4 left-1/2 -translate-x-1/2">
-              <Badge className="bg-primary text-primary-foreground px-4 py-1">
-                Most Popular
-              </Badge>
-            </div>
-          )}
-          
-          <CardHeader className="text-center pb-8 pt-8">
-            <CardTitle className="text-2xl mb-2">{tier.name}</CardTitle>
-            <div class="mb-2">
-              <span class="text-5xl font-bold">{tier.price}</span>
-              <span class="text-muted-foreground ml-2">/ {tier.period}</span>
-            </div>
-            <CardDescription className="text-base">{tier.description}</CardDescription>
-          </CardHeader>
-
-          <CardContent className="space-y-6">
-            <div class="space-y-3">
-              {tier.features.map((feature) => (
-                <div class="flex items-start gap-3">
-                  {feature.included ? (
-                    <Check className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                  ) : (
-                    <X className="h-5 w-5 text-muted-foreground/40 shrink-0 mt-0.5" />
-                  )}
-                  <span class={`text-sm ${feature.included ? '' : 'text-muted-foreground'}`}>
-                    {feature.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            <Button 
-              variant={tier.ctaVariant}
-              className="w-full"
-              size="lg"
-            >
-              {tier.cta}
-            </Button>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-
-    <!-- Benefits Section -->
-    <div class="max-w-4xl mx-auto">
-      <div class="text-center mb-10">
-        <h2 class="text-3xl font-bold mb-3">What You'll Get</h2>
-        <p class="text-muted-foreground">
-          Powerful features designed specifically for church ministry leaders
+    <!-- Features Preview Grid -->
+    <div class="container py-20">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-4">What's Coming</h2>
+        <p class="text-muted-foreground max-w-2xl mx-auto">
+          Premium features designed to elevate your ministry and streamline your workflow.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {benefits.map((benefit) => {
-          const IconComponent = benefit.icon;
-          return (
-            <Card className="relative overflow-hidden">
-              {benefit.premium && (
-                <div class="absolute top-3 right-3">
-                  <Badge variant="secondary" className="text-xs">
-                    Premium
-                  </Badge>
-                </div>
-              )}
-              
-              <CardHeader>
-                <div class="flex items-center gap-3 mb-2">
-                  <div class={`p-2 rounded-lg ${benefit.premium ? 'bg-primary/10 text-primary' : 'bg-muted'}`}>
-                    <IconComponent className="h-5 w-5" />
-                  </div>
-                  <CardTitle className="text-lg">{benefit.title}</CardTitle>
-                </div>
-                <CardDescription>{benefit.description}</CardDescription>
-              </CardHeader>
-            </Card>
-          );
-        })}
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <!-- Feature 1 -->
+        <Card className="relative overflow-hidden border-2 hover:border-primary/50 transition-colors">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16"></div>
+          <CardContent className="pt-6">
+            <div class="rounded-lg bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
+              <Crown className="h-6 w-6 text-primary" />
+            </div>
+            <h3 class="font-semibold text-lg mb-2">Exclusive Prompts</h3>
+            <p class="text-muted-foreground text-sm">
+              Access premium, ministry-tested prompts crafted by experts and unavailable anywhere else.
+            </p>
+            <Badge variant="outline" className="mt-4">
+              <Lock className="mr-1 h-3 w-3" />
+              Premium Only
+            </Badge>
+          </CardContent>
+        </Card>
+
+        <!-- Feature 2 -->
+        <Card className="relative overflow-hidden border-2 hover:border-primary/50 transition-colors">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16"></div>
+          <CardContent className="pt-6">
+            <div class="rounded-lg bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
+              <Zap className="h-6 w-6 text-primary" />
+            </div>
+            <h3 class="font-semibold text-lg mb-2">AI Execution</h3>
+            <p class="text-muted-foreground text-sm">
+              Run prompts directly with AI, customize outputs, and save execution history for easy reference.
+            </p>
+            <Badge variant="outline" className="mt-4">
+              <Lock className="mr-1 h-3 w-3" />
+              Premium Only
+            </Badge>
+          </CardContent>
+        </Card>
+
+        <!-- Feature 3 -->
+        <Card className="relative overflow-hidden border-2 hover:border-primary/50 transition-colors">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16"></div>
+          <CardContent className="pt-6">
+            <div class="rounded-lg bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
+              <Sparkles className="h-6 w-6 text-primary" />
+            </div>
+            <h3 class="font-semibold text-lg mb-2">Priority Support</h3>
+            <p class="text-muted-foreground text-sm">
+              Get your questions answered first with dedicated support from our team.
+            </p>
+            <Badge variant="outline" className="mt-4">
+              <Lock className="mr-1 h-3 w-3" />
+              Premium Only
+            </Badge>
+          </CardContent>
+        </Card>
+
+        <!-- Feature 4 -->
+        <Card className="relative overflow-hidden border-2 hover:border-primary/50 transition-colors">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16"></div>
+          <CardContent className="pt-6">
+            <div class="rounded-lg bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
+              <svg class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+              </svg>
+            </div>
+            <h3 class="font-semibold text-lg mb-2">Save Favorites</h3>
+            <p class="text-muted-foreground text-sm">
+              Bookmark your most-used prompts and organize them for quick access anytime.
+            </p>
+            <Badge variant="outline" className="mt-4">
+              <Lock className="mr-1 h-3 w-3" />
+              Premium Only
+            </Badge>
+          </CardContent>
+        </Card>
+
+        <!-- Feature 5 -->
+        <Card className="relative overflow-hidden border-2 hover:border-primary/50 transition-colors">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16"></div>
+          <CardContent className="pt-6">
+            <div class="rounded-lg bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
+              <svg class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <h3 class="font-semibold text-lg mb-2">Prompt Builder</h3>
+            <p class="text-muted-foreground text-sm">
+              Build, test, and refine prompts with a simple editor — save templates and iterate faster.
+            </p>
+            <Badge variant="outline" className="mt-4">
+              <Lock className="mr-1 h-3 w-3" />
+              Premium Only
+            </Badge>
+          </CardContent>
+        </Card>
+
+        <!-- Feature 6 -->
+        <Card className="relative overflow-hidden border-2 hover:border-primary/50 transition-colors">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16"></div>
+          <CardContent className="pt-6">
+            <div class="rounded-lg bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
+              <svg class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <h3 class="font-semibold text-lg mb-2">Advanced Tools</h3>
+            <p class="text-muted-foreground text-sm">
+              Custom workflows, batch processing, and specialized tools for sermon prep and content creation.
+            </p>
+            <Badge variant="outline" className="mt-4">
+              <Lock className="mr-1 h-3 w-3" />
+              Premium Only
+            </Badge>
+          </CardContent>
+        </Card>
       </div>
     </div>
 
-    <!-- FAQ Section -->
-    <div class="max-w-3xl mx-auto mt-16">
-      <h2 class="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-      
-      <div class="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Can I cancel anytime?</CardTitle>
-            <CardDescription>
-              Yes! You can cancel your subscription at any time. You'll retain access to premium features until the end of your billing period.
-            </CardDescription>
-          </CardHeader>
-        </Card>
+    <!-- Free vs Premium Comparison -->
+    <div class="container py-20 border-t">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-4">Free vs Premium</h2>
+        <p class="text-muted-foreground max-w-2xl mx-auto">
+          Start with our free plan and upgrade when you're ready for advanced features.
+        </p>
+      </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Is there a free trial?</CardTitle>
-            <CardDescription>
-              Yes! Premium subscriptions include a 14-day free trial. No credit card required to start.
-            </CardDescription>
-          </CardHeader>
-        </Card>
+      <div class="max-w-4xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Free Plan -->
+          <Card className="border-2">
+            <CardContent className="pt-8 pb-8">
+              <div class="text-center mb-6">
+                <h3 class="text-2xl font-bold mb-2">Free Forever</h3>
+                <div class="mb-2">
+                  <span class="text-5xl font-bold">$0</span>
+                </div>
+                <p class="text-muted-foreground">Perfect to get started</p>
+              </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">What AI models do you use?</CardTitle>
-            <CardDescription>
-              We use state-of-the-art language models optimized for church ministry contexts. Premium members get priority access and faster processing.
-            </CardDescription>
-          </CardHeader>
-        </Card>
+              <div class="space-y-3">
+                <div class="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                  <span class="text-sm">Browse all approved prompts</span>
+                </div>
+                <div class="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                  <span class="text-sm">Search and filter by category</span>
+                </div>
+                <div class="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                  <span class="text-sm">Submit your own prompts</span>
+                </div>
+                <div class="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                  <span class="text-sm">Copy prompts to clipboard</span>
+                </div>
+                <div class="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                  <span class="text-sm">View up to 10 prompts per session</span>
+                </div>
+                <div class="flex items-start gap-3">
+                  <X className="h-5 w-5 text-muted-foreground/40 shrink-0 mt-0.5" />
+                  <span class="text-sm text-muted-foreground">AI execution engine</span>
+                </div>
+                <div class="flex items-start gap-3">
+                  <X className="h-5 w-5 text-muted-foreground/40 shrink-0 mt-0.5" />
+                  <span class="text-sm text-muted-foreground">Save favorites & bookmarks</span>
+                </div>
+                <div class="flex items-start gap-3">
+                  <X className="h-5 w-5 text-muted-foreground/40 shrink-0 mt-0.5" />
+                  <span class="text-sm text-muted-foreground">Execution history</span>
+                </div>
+                <div class="flex items-start gap-3">
+                  <X className="h-5 w-5 text-muted-foreground/40 shrink-0 mt-0.5" />
+                  <span class="text-sm text-muted-foreground">Exclusive premium prompts</span>
+                </div>
+                <div class="flex items-start gap-3">
+                  <X className="h-5 w-5 text-muted-foreground/40 shrink-0 mt-0.5" />
+                  <span class="text-sm text-muted-foreground">Priority support</span>
+                </div>
+              </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Can I share my account?</CardTitle>
-            <CardDescription>
-              Individual subscriptions are for single users. We offer team plans for churches with multiple staff members. Contact us for pricing.
-            </CardDescription>
-          </CardHeader>
-        </Card>
+              <a href="/directory" class={buttonVariants({ variant: 'outline', className: 'w-full mt-6' })}>
+                Browse Free Prompts
+              </a>
+            </CardContent>
+          </Card>
+
+          <!-- Premium Plan -->
+          <Card className="border-2 border-primary shadow-lg relative">
+            <div class="absolute -top-4 left-1/2 -translate-x-1/2">
+              <Badge className="bg-primary text-primary-foreground px-4 py-1">
+                Coming Soon
+              </Badge>
+            </div>
+            
+            <CardContent className="pt-8 pb-8">
+              <div class="text-center mb-6">
+                <h3 class="text-2xl font-bold mb-2">Premium</h3>
+                <div class="mb-2">
+                  <!-- <span class="text-5xl font-bold">$19</span> -->
+                  <!-- <span class="text-muted-foreground ml-2">/ month</span> -->
+                </div>
+                <p class="text-muted-foreground">For power users and church ministry teams</p>
+              </div>
+
+              <div class="space-y-3">
+                <div class="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                  <span class="text-sm font-medium">Everything in Free, plus:</span>
+                </div>
+                <div class="flex items-start gap-3 ml-8">
+                  <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <span class="text-sm">Unlimited prompt views</span>
+                </div>
+                <div class="flex items-start gap-3 ml-8">
+                  <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <span class="text-sm">AI execution engine built-in</span>
+                </div>
+                <div class="flex items-start gap-3 ml-8">
+                  <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <span class="text-sm">Save unlimited favorites</span>
+                </div>
+                <div class="flex items-start gap-3 ml-8">
+                  <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <span class="text-sm">Full execution history</span>
+                </div>
+                <div class="flex items-start gap-3 ml-8">
+                  <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <span class="text-sm">Access to exclusive prompts</span>
+                </div>
+                <div class="flex items-start gap-3 ml-8">
+                  <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <span class="text-sm">Custom workflows & batch tools</span>
+                </div>
+                <div class="flex items-start gap-3 ml-8">
+                  <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <span class="text-sm">Prompt Builder</span>
+                </div>
+                <div class="flex items-start gap-3 ml-8">
+                  <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <span class="text-sm">Priority email support</span>
+                </div>
+                <div class="flex items-start gap-3 ml-8">
+                  <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <span class="text-sm">Early access to new features</span>
+                </div>
+              </div>
+
+              <a href="/sign-in" class={buttonVariants({ className: 'w-full mt-6' })}>
+                <Bell className="mr-2 h-4 w-4" />
+                Join Waitlist
+              </a>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
 
-    <!-- Final CTA -->
-    <div class="max-w-2xl mx-auto mt-16 text-center">
-      <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-        <CardContent className="py-12">
-          <h2 class="text-2xl font-bold mb-3">Ready to Transform Your Ministry?</h2>
-          <p class="text-muted-foreground mb-6">
-            Join hundreds of ministry leaders using AI to work smarter, not harder.
-          </p>
-          <div class="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button size="lg">
-              Start Free Trial
-            </Button>
-            <Button variant="outline" size="lg" asChild>
-              <a href="/directory">Browse Prompts</a>
-            </Button>
+    <!-- CTA Section -->
+    <div class="container pb-20">
+      <Card className="max-w-3xl mx-auto border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+        <CardContent className="pt-12 pb-12 text-center">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-6">
+            <Bell className="h-8 w-8 text-primary" />
           </div>
+          
+          <h2 class="text-3xl font-bold mb-4">Be the First to Know</h2>
+          <p class="text-muted-foreground mb-8 max-w-xl mx-auto">
+            Sign up to get notified when premium features launch. Early supporters will receive exclusive benefits and special pricing.
+          </p>
+          
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/sign-in" class={buttonVariants({ size: 'lg', className: 'group' })}>
+              <Bell className="mr-2 h-5 w-5" />
+              Join the Waitlist
+            </a>
+            <a href="/directory" class={buttonVariants({ size: 'lg', variant: 'outline' })}>
+              Browse Free Prompts
+              <!-- <ArrowRight className="ml-2 h-4 w-4" /> -->
+            </a>
+          </div>
+          
+          <p class="text-sm text-muted-foreground mt-6">
+            ✨ Currently building amazing features • Launch date TBA
+          </p>
         </CardContent>
       </Card>
     </div>
