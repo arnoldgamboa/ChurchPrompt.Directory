@@ -20,19 +20,44 @@ export const onRequest = clerkMiddleware(async (auth, context, next) => {
     return redirectToSignIn();
   }
 
-  // For admin routes, check if user has admin role
+  // For admin routes, check if user has admin role from Convex database
   if (isAdminRoute(context.request)) {
     if (!userId) {
       return redirectToSignIn();
     }
 
-    // Get user's role from public metadata
-    const { sessionClaims } = auth();
-    const role = sessionClaims?.metadata?.role as string | undefined;
+    // Fetch user role from Convex
+    const convexUrl = context.locals.runtime?.env?.PUBLIC_CONVEX_URL || import.meta.env.PUBLIC_CONVEX_URL;
+    
+    if (convexUrl) {
+      try {
+        const response = await fetch(`${convexUrl}/api/query`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            path: 'users:getUserByClerkId',
+            args: { clerkId: userId },
+            format: 'json',
+          }),
+        });
 
-    // If user is not an admin, redirect to home with error
-    if (role !== 'admin') {
-      return context.redirect('/?error=unauthorized');
+        if (response.ok) {
+          const result = await response.json();
+          const user = result.value;
+          
+          if (!user || user.role !== 'admin') {
+            return context.redirect('/?error=unauthorized');
+          }
+        } else {
+          // If query fails, deny access
+          return context.redirect('/?error=unauthorized');
+        }
+      } catch (error) {
+        console.error('[Middleware] Error checking admin role:', error);
+        return context.redirect('/?error=unauthorized');
+      }
     }
   }
 

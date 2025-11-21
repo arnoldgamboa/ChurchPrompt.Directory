@@ -51,6 +51,9 @@ export default function Header({
               <a href="/submit" className={getLinkClasses("/submit")}>
                 Submit Prompt
               </a>
+              <a href="/subscribe" className={getLinkClasses("/subscribe")}>
+                Pricing
+              </a>
               <a href="/profile" className={getLinkClasses("/profile")}>
                 Profile
               </a>
@@ -122,6 +125,9 @@ export default function Header({
                 <a href="/submit" className={`${getLinkClasses("/submit")} py-2`}>
                   Submit Prompt
                 </a>
+                <a href="/subscribe" className={`${getLinkClasses("/subscribe")} py-2`}>
+                Pricing
+              </a>
                 <a href="/profile" className={`${getLinkClasses("/profile")} py-2`}>
                   Profile
                 </a>

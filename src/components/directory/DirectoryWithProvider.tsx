@@ -3,19 +3,12 @@ import { DirectoryContent } from "./DirectoryContent";
 
 interface DirectoryWithProviderProps {
   convexUrl: string;
-  categories: Array<{
-    id: string;
-    name: string;
-    description: string;
-    icon: string;
-    promptCount: number;
-  }>;
 }
 
-export function DirectoryWithProvider({ convexUrl, categories }: DirectoryWithProviderProps) {
+export function DirectoryWithProvider({ convexUrl }: DirectoryWithProviderProps) {
   return (
     <ConvexClientProvider convexUrl={convexUrl}>
-      <DirectoryContent categories={categories} />
+      <DirectoryContent />
     </ConvexClientProvider>
   );
 }

@@ -1,9 +1,7 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
 import { DirectoryWithProvider } from '@/components/directory/DirectoryWithProvider';
-import categoriesData from '@/data/categories.json';
 
-const categories = categoriesData;
 const convexUrl = import.meta.env.PUBLIC_CONVEX_URL;
 ---
 
@@ -12,7 +10,6 @@ const convexUrl = import.meta.env.PUBLIC_CONVEX_URL;
     <DirectoryWithProvider 
       client:only="react"
       convexUrl={convexUrl}
-      categories={categories} 
     />
   </div>
 </MainLayout>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useMutation } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { useAuth } from '@clerk/astro/react';
 import { api } from '../../../convex/_generated/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,10 +13,6 @@ interface Category {
   name: string;
 }
 
-interface SubmissionFormProps {
-  categories: Category[];
-}
-
 interface FormErrors {
   title?: string;
   content?: string;
@@ -24,7 +20,7 @@ interface FormErrors {
   tags?: string;
 }
 
-export const SubmissionForm: React.FC<SubmissionFormProps> = ({ categories }) => {
+export const SubmissionForm: React.FC = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('');
@@ -37,6 +33,13 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({ categories }) =>
 
   const { userId, isLoaded } = useAuth();
   const createPrompt = useMutation(api.prompts.createPrompt);
+  
+  // Fetch categories from Convex
+  const categoriesData = useQuery(api.categories.getCategories);
+  const categories: Category[] = categoriesData?.map(cat => ({
+    id: cat.categoryId,
+    name: cat.name
+  })) || [];
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -111,18 +114,8 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({ categories }) =>
         tags,
       });
 
-      setIsSuccess(true);
-
-      // Reset form after 3 seconds
-      setTimeout(() => {
-        setTitle('');
-        setContent('');
-        setCategory('');
-        setTags([]);
-        setTagsInput('');
-        setErrors({});
-        setIsSuccess(false);
-      }, 3000);
+      // Redirect to profile page after successful submission
+      window.location.href = '/profile';
     } catch (error) {
       console.error('Failed to submit prompt:', error);
       setSubmitError(error instanceof Error ? error.message : 'Failed to submit prompt. Please try again.');
@@ -130,20 +123,6 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({ categories }) =>
       setIsSubmitting(false);
     }
   };
-
-  if (isSuccess) {
-    return (
-      <Card className="max-w-2xl mx-auto">
-        <CardContent className="flex flex-col items-center justify-center py-12">
-          <CheckCircle2 className="h-16 w-16 text-green-500 mb-4" />
-          <h2 className="text-2xl font-bold mb-2">Prompt Submitted Successfully!</h2>
-          <p className="text-muted-foreground text-center max-w-md">
-            Thank you for contributing to the community. Your prompt has been submitted for review and will be published once approved by our team.
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
 
   return (
     <Card className="max-w-2xl mx-auto">

@@ -145,3 +145,27 @@ export const ensureCurrentUser = mutation({
     return { _id, ...doc };
   },
 });
+
+// Mutation: Make current user an admin (temporary helper - remove after use)
+export const makeCurrentUserAdmin = mutation({
+  args: {},
+  handler: async ({ db, auth }) => {
+    const identity = await auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
+
+    const clerkId = identity.subject;
+    const user = await db
+      .query("users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkId))
+      .first();
+
+    if (!user) throw new Error("User not found");
+
+    await db.patch(user._id, {
+      role: "admin",
+      updatedAt: Date.now(),
+    });
+
+    return { success: true, message: `User ${user.name} is now an admin` };
+  },
+});

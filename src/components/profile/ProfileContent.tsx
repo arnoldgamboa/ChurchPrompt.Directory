@@ -188,7 +188,7 @@ export const ProfileContent: React.FC = () => {
         {/* Submitted Prompts Tab */}
         <TabsContent value="submitted" className="mt-6">
           {submittedPrompts && submittedPrompts.length > 0 ? (
-            <div className="space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {submittedPrompts.map((prompt) => (
                 <div key={prompt._id} className="relative">
                   <div className="absolute -top-2 -right-2 z-10">

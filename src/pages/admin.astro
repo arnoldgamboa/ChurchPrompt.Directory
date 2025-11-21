@@ -1,88 +1,25 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
-import { AdminDashboard } from '@/components/admin/AdminDashboard';
+import { AdminDashboardWithProvider } from '@/components/admin/AdminDashboardWithProvider';
 
-// Mock pending prompts for admin review
-const pendingPrompts = [
-  {
-    id: 'pending-1',
-    title: 'Youth Group Icebreaker Activities',
-    content: 'Generate creative icebreaker activities for youth group meetings that foster connection and spiritual growth. Include: 1) Games that work for groups of 10-30 teens, 2) Discussion starters that tie into faith topics, 3) Activities that require minimal supplies, 4) Options for both indoor and outdoor settings, 5) Time estimates for each activity. Make them fun, age-appropriate, and meaningful.',
-    excerpt: 'Generate creative icebreaker activities for youth group meetings that foster connection and spiritual growth.',
-    category: 'teaching',
-    tags: ['youth', 'activities', 'community', 'icebreakers'],
-    authorName: 'Rev. Sarah Chen',
-    authorEmail: 'sarah.chen@faithchurch.org',
-    submittedAt: '2024-11-18T10:30:00Z',
-    status: 'pending' as const,
-  },
-  {
-    id: 'pending-2',
-    title: 'Christmas Eve Service Planning Guide',
-    content: 'Create a comprehensive planning guide for a Christmas Eve candlelight service. Include: 1) Order of service with timing for each element, 2) Scripture readings and carol suggestions, 3) Communion preparation checklist, 4) Volunteer coordination details, 5) Technical requirements (sound, lighting, candles), 6) Welcome message for first-time visitors. Design for a traditional yet welcoming atmosphere.',
-    excerpt: 'Create a comprehensive planning guide for a Christmas Eve candlelight service.',
-    category: 'event-planning',
-    tags: ['christmas', 'worship', 'planning', 'special-events'],
-    authorName: 'Pastor Michael Rodriguez',
-    authorEmail: 'michael.r@gracechapel.com',
-    submittedAt: '2024-11-17T14:22:00Z',
-    status: 'pending' as const,
-  },
-  {
-    id: 'pending-3',
-    title: 'Church Budget Proposal Template',
-    content: 'Help me create a church budget proposal for [FISCAL YEAR] that includes: 1) Ministry department breakdowns with justification, 2) Staffing costs and benefits, 3) Building maintenance and utilities, 4) Outreach and missions allocation, 5) Technology and equipment upgrades, 6) Emergency fund recommendations. Present in a format suitable for board presentation with charts and summaries.',
-    excerpt: 'Create a comprehensive church budget proposal with ministry breakdowns and board presentation format.',
-    category: 'administrative',
-    tags: ['budget', 'finance', 'planning', 'administration'],
-    authorName: 'Emily Thompson',
-    authorEmail: 'emily.thompson@communitychurch.net',
-    submittedAt: '2024-11-16T09:15:00Z',
-    status: 'pending' as const,
-  },
-  {
-    id: 'pending-4',
-    title: 'Small Group Discussion Questions Generator',
-    content: 'Create thought-provoking discussion questions for a small group studying [BIBLE PASSAGE/TOPIC]. Include: 1) 2-3 observation questions about the text, 2) 2-3 interpretation questions exploring meaning, 3) 2-3 application questions for daily life, 4) One challenge question that pushes deeper reflection, 5) A closing reflection prompt. Questions should encourage honest sharing and spiritual growth.',
-    excerpt: 'Generate thought-provoking discussion questions for small group Bible studies.',
-    category: 'teaching',
-    tags: ['small-groups', 'discussion', 'bible-study', 'discipleship'],
-    authorName: 'David Kim',
-    authorEmail: 'david.kim@newlifechurch.org',
-    submittedAt: '2024-11-15T16:45:00Z',
-    status: 'pending' as const,
-  },
-  {
-    id: 'pending-5',
-    title: 'Social Media Advent Calendar Content',
-    content: 'Create a 25-day Advent social media content calendar leading up to Christmas. For each day include: 1) A scripture verse or quote, 2) A short reflection (50-100 words), 3) An engaging visual concept or prompt, 4) Relevant hashtags, 5) Call-to-action or discussion question. Keep the tone hopeful, inspirational, and accessible to both believers and seekers.',
-    excerpt: 'Create a 25-day Advent social media content calendar with scripture, reflections, and visuals.',
-    category: 'social-media',
-    tags: ['advent', 'social-media', 'christmas', 'content-calendar'],
-    authorName: 'Jordan Williams',
-    authorEmail: 'jordan.w@crossroadschurch.com',
-    submittedAt: '2024-11-14T11:20:00Z',
-    status: 'pending' as const,
-  },
-];
+const convexUrl = import.meta.env.PUBLIC_CONVEX_URL;
+
+if (!convexUrl) {
+  throw new Error('PUBLIC_CONVEX_URL is not set');
+}
+
+export const prerender = false;
 ---
 
 <MainLayout title="Admin Dashboard | Church Prompt Directory">
-  <div class="bg-muted/30 border-b border-border mb-8">
-    <div class="container py-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <h1 class="text-3xl font-bold">Admin Dashboard</h1>
-          <p class="text-muted-foreground mt-1">Review and manage prompt submissions</p>
-        </div>
-        <div class="px-4 py-2 rounded-lg bg-primary/10 text-primary">
-          <span class="text-sm font-medium">Admin Access</span>
-        </div>
-      </div>
+  <div class="container py-8">
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold mb-2">Admin Dashboard</h1>
+      <p class="text-lg text-muted-foreground">
+        Review and manage prompt submissions from the community.
+      </p>
     </div>
-  </div>
-
-  <div class="container pb-8">
-    <AdminDashboard client:load pendingPrompts={pendingPrompts} />
+    
+    <AdminDashboardWithProvider client:only="react" convexUrl={convexUrl} />
   </div>
 </MainLayout>

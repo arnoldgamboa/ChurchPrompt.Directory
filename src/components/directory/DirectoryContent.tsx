@@ -20,18 +20,13 @@ export interface Prompt {
   updatedAt: string;
 }
 
-interface DirectoryContentProps {
-  categories: Category[];
-}
-
-export const DirectoryContent: React.FC<DirectoryContentProps> = ({
-  categories,
-}) => {
+export const DirectoryContent: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState<string>(''); // '' = default heuristic
 
-  // Fetch prompts from Convex
+  // Fetch data from Convex
+  const categoriesData = useQuery(api.categories.getCategories);
   const prompts = useQuery(api.prompts.getApprovedPrompts, {
     category: selectedCategories.length > 0 ? selectedCategories[0] : undefined,
     search: searchQuery || undefined,
@@ -39,8 +34,15 @@ export const DirectoryContent: React.FC<DirectoryContentProps> = ({
   });
 
   // Loading and error states
-  const isLoading = prompts === undefined;
+  const isLoading = prompts === undefined || categoriesData === undefined;
   const promptList = prompts || [];
+  const categories: Category[] = categoriesData?.map(cat => ({
+    id: cat.categoryId,
+    name: cat.name,
+    description: cat.description,
+    icon: cat.icon,
+    promptCount: cat.promptCount
+  })) || [];
 
   // Initialize from URL params
   React.useEffect(() => {

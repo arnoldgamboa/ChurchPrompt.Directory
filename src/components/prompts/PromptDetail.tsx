@@ -42,6 +42,7 @@ export default function PromptDetail({
   
   // Mutation for incrementing usage count
   const incrementUsage = useMutation(api.prompts.incrementUsageCount);
+  const deletePrompt = useMutation(api.prompts.deletePrompt);
 
   const handleCopy = async () => {
     if (!prompt) return;
@@ -68,6 +69,29 @@ export default function PromptDetail({
   const handleRun = () => {
     setIsModalOpen(true);
     onRun?.();
+  };
+
+  const handleEdit = () => {
+    // Redirect to admin page with this prompt selected
+    window.location.href = `/admin?promptId=${promptId}`;
+  };
+
+  const handleDelete = async () => {
+    if (!prompt) return;
+    
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${prompt.title}"? This action cannot be undone.`
+    );
+    
+    if (confirmed) {
+      try {
+        await deletePrompt({ promptId: promptId as any });
+        window.location.href = '/admin';
+      } catch (error) {
+        console.error('Failed to delete prompt:', error);
+        alert('Failed to delete prompt. Please try again.');
+      }
+    }
   };
 
   // Loading state
@@ -200,7 +224,7 @@ export default function PromptDetail({
               <div className="h-6 w-px bg-border" />
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={handleEdit}>
                     <Edit className="mr-2 h-4 w-4" />
                     Edit
                   </Button>
@@ -212,7 +236,7 @@ export default function PromptDetail({
               
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={handleDelete}>
                     <Trash2 className="mr-2 h-4 w-4 text-destructive" />
                     Delete
                   </Button>

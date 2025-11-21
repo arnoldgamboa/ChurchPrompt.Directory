@@ -2,13 +2,6 @@
 import MainLayout from '@/layouts/MainLayout.astro';
 import { SubmissionFormWithProvider } from '@/components/prompts/SubmissionFormWithProvider';
 
-import categoriesData from '@/data/categories.json';
-
-const categories = categoriesData.map(cat => ({
-  id: cat.id,
-  name: cat.name
-}));
-
 const convexUrl = import.meta.env.PUBLIC_CONVEX_URL;
 
 if (!convexUrl) {
@@ -30,7 +23,6 @@ export const prerender = false;
     <SubmissionFormWithProvider 
       client:only="react"
       convexUrl={convexUrl}
-      categories={categories} 
     />
   </div>
 </MainLayout>

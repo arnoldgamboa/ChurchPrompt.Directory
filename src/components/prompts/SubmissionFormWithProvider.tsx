@@ -1,26 +1,17 @@
 import React from 'react';
-import { ConvexProvider, ConvexReactClient } from 'convex/react';
+import ConvexClientProvider from '@/components/providers/ConvexClientProvider';
 import { SubmissionForm } from './SubmissionForm';
-
-interface Category {
-  id: string;
-  name: string;
-}
 
 interface SubmissionFormWithProviderProps {
   convexUrl: string;
-  categories: Category[];
 }
 
 export const SubmissionFormWithProvider: React.FC<SubmissionFormWithProviderProps> = ({ 
-  convexUrl, 
-  categories 
+  convexUrl
 }) => {
-  const convex = new ConvexReactClient(convexUrl);
-
   return (
-    <ConvexProvider client={convex}>
-      <SubmissionForm categories={categories} />
-    </ConvexProvider>
+    <ConvexClientProvider convexUrl={convexUrl}>
+      <SubmissionForm />
+    </ConvexClientProvider>
   );
 };

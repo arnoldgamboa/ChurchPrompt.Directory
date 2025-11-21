@@ -233,8 +233,13 @@ export const createPrompt = mutation({
       ? content.substring(0, 150) + '...' 
       : content;
 
-    // Get author name from identity
-    const authorName = identity.name || identity.email?.split('@')[0] || 'Anonymous';
+    // Get author name from users table
+    const user = await db
+      .query("users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
+      .first();
+    
+    const authorName = user?.name || identity.email?.split('@')[0] || 'Anonymous';
 
     const promptId = await db.insert("prompts", {
       title,
@@ -256,9 +261,105 @@ export const createPrompt = mutation({
   },
 });
 
+// Query: Get pending prompts (admin only)
+export const getPendingPrompts = query({
+  args: {},
+  handler: async ({ db, auth }) => {
+    const identity = await auth.getUserIdentity();
+    if (!identity) throw new Error("Authentication required");
+
+    const results = await db
+      .query("prompts")
+      .withIndex("by_status", (q) => q.eq("status", "pending"))
+      .collect();
+
+    return results;
+  },
+});
+
+// Query: Get all prompts (admin only)
+export const getAllPrompts = query({
+  args: {},
+  handler: async ({ db, auth }) => {
+    const identity = await auth.getUserIdentity();
+    if (!identity) throw new Error("Authentication required");
+
+    const results = await db.query("prompts").collect();
+    return results;
+  },
+});
+
 // Mutation: Update prompt status (admin only)
-/*
- Temporarily disabled admin-only functions to isolate deployment issue.
- export const updatePromptStatus = mutation({ ... });
- export const getPendingPrompts = query({ ... });
-*/
+export const updatePromptStatus = mutation({
+  args: {
+    promptId: v.id("prompts"),
+    status: v.string(), // "approved" | "rejected" | "pending"
+  },
+  handler: async ({ db, auth }, args) => {
+    const identity = await auth.getUserIdentity();
+    if (!identity) throw new Error("Authentication required");
+
+    const { promptId, status } = args;
+
+    await db.patch(promptId, {
+      status,
+      updatedAt: Date.now(),
+    });
+
+    return { success: true };
+  },
+});
+
+// Mutation: Update prompt (admin edit before approving)
+export const updatePrompt = mutation({
+  args: {
+    promptId: v.id("prompts"),
+    title: v.optional(v.string()),
+    content: v.optional(v.string()),
+    category: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())),
+  },
+  handler: async ({ db, auth }, args) => {
+    const identity = await auth.getUserIdentity();
+    if (!identity) throw new Error("Authentication required");
+
+    const { promptId, title, content, category, tags } = args;
+
+    const updates: any = {
+      updatedAt: Date.now(),
+    };
+
+    if (title !== undefined) updates.title = title;
+    if (category !== undefined) updates.category = category;
+    if (tags !== undefined) updates.tags = tags;
+    
+    if (content !== undefined) {
+      updates.content = content;
+      // Update excerpt when content changes
+      updates.excerpt = content.length > 150 
+        ? content.substring(0, 150) + '...' 
+        : content;
+    }
+
+    await db.patch(promptId, updates);
+
+    return { success: true };
+  },
+});
+
+// Mutation: Delete prompt (admin only)
+export const deletePrompt = mutation({
+  args: {
+    promptId: v.id("prompts"),
+  },
+  handler: async ({ db, auth }, args) => {
+    const identity = await auth.getUserIdentity();
+    if (!identity) throw new Error("Authentication required");
+
+    const { promptId } = args;
+
+    await db.delete(promptId);
+
+    return { success: true };
+  },
+});
