@@ -1,5 +1,6 @@
 import ConvexClientProvider from "@/components/providers/ConvexClientProvider";
 import PromptDetail from "./PromptDetail";
+import AnonymousViewGuard from "./AnonymousViewGuard";
 
 interface PromptDetailWithProviderProps {
   convexUrl: string;
@@ -16,11 +17,13 @@ export function PromptDetailWithProvider({
 }: PromptDetailWithProviderProps) {
   return (
     <ConvexClientProvider convexUrl={convexUrl}>
-      <PromptDetail 
-        promptId={promptId} 
-        isSubscribed={isSubscribed} 
-        isFavorite={isFavorite} 
-      />
+      <AnonymousViewGuard autoIncrementOnMount={true}>
+        <PromptDetail 
+          promptId={promptId} 
+          isSubscribed={isSubscribed} 
+          isFavorite={isFavorite} 
+        />
+      </AnonymousViewGuard>
     </ConvexClientProvider>
   );
 }

@@ -19,6 +19,9 @@ import { Button } from '@/components/ui/button';
 interface AnonymousViewGuardProps {
   children: ReactNode;
   onViewPrompt?: () => void;
+  // If true (default) the guard will auto-increment view count on mount
+  // useful for prompt detail pages where viewing should count as a view.
+  autoIncrementOnMount?: boolean;
 }
 
 /**
@@ -33,6 +36,7 @@ interface AnonymousViewGuardProps {
 export default function AnonymousViewGuard({
   children,
   onViewPrompt,
+  autoIncrementOnMount = true,
 }: AnonymousViewGuardProps) {
   const { userId, isLoaded } = useAuth();
   const isSignedIn = !!userId;
@@ -80,9 +84,12 @@ export default function AnonymousViewGuard({
     }
 
     // Increment view count for anonymous users
+    const oldCount = getRemainingViews();
     incrementAnonymousViewCount();
     const remaining = getRemainingViews();
     setRemainingViews(remaining);
+
+    console.debug('[AnonymousViewGuard] handlePromptView:', { isSignedIn, remaining, oldCount });
 
     // Call the view callback
     onViewPrompt?.();
@@ -95,11 +102,12 @@ export default function AnonymousViewGuard({
 
   // Auto-increment on mount for viewing a prompt detail page
   useEffect(() => {
-    if (isLoaded && !isSignedIn && onViewPrompt) {
+    if (isLoaded && !isSignedIn && (onViewPrompt || autoIncrementOnMount)) {
+      console.debug('[AnonymousViewGuard] auto-incrementing on mount', { autoIncrementOnMount, hasCallback: !!onViewPrompt });
       handlePromptView();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, isSignedIn]);
+  }, [isLoaded, isSignedIn, autoIncrementOnMount]);
 
   return (
     <>

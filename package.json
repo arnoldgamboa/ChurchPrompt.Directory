@@ -44,6 +44,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": ">=18.20.8"
+  },
   "devDependencies": {
     "fast-check": "^3.16.0",
     "vitest": "^2.1.4"
