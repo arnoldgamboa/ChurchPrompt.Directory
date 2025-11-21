@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { CheckCircle2, XCircle, Clock, User, Calendar, Tag, Edit2, Save, X, Trash2 } from 'lucide-react';
+import { CheckCircle2, XCircle, Clock, User, Calendar, Tag, Edit2, Save, X, Trash2, Star, StarOff } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
   const allPrompts = useQuery(api.prompts.getAllPrompts);
@@ -113,6 +113,18 @@ export const AdminDashboard: React.FC = () => {
     } catch (error) {
       console.error('Failed to approve prompt:', error);
       setActionMessage({ type: 'error', text: 'Failed to approve prompt' });
+      setTimeout(() => setActionMessage(null), 3000);
+    }
+  };
+
+  const handleToggleFeatured = async (promptId: Id<"prompts">, current: boolean | undefined) => {
+    try {
+      await updatePrompt({ promptId, featured: !current });
+      setActionMessage({ type: 'success', text: !current ? 'Marked as featured.' : 'Removed featured mark.' });
+      setTimeout(() => setActionMessage(null), 2000);
+    } catch (error) {
+      console.error('Failed to toggle featured:', error);
+      setActionMessage({ type: 'error', text: 'Failed to toggle featured flag' });
       setTimeout(() => setActionMessage(null), 3000);
     }
   };
@@ -412,6 +424,14 @@ export const AdminDashboard: React.FC = () => {
                           selectedPrompt.status.slice(1)}
                       </Badge>
                     </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Featured:</span>
+                      {selectedPrompt.featured ? (
+                        <Badge variant="default">Yes</Badge>
+                      ) : (
+                        <Badge variant="secondary">No</Badge>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -475,6 +495,20 @@ export const AdminDashboard: React.FC = () => {
               </div>
             </CardContent>
           )}
+                    {selectedPrompt && (
+                      <Button
+                        variant={selectedPrompt.featured ? 'outline' : 'default'}
+                        className="w-full"
+                        onClick={() => handleToggleFeatured(selectedPrompt._id, selectedPrompt.featured)}
+                      >
+                        {selectedPrompt.featured ? (
+                          <StarOff className="h-4 w-4 mr-2" />
+                        ) : (
+                          <Star className="h-4 w-4 mr-2" />
+                        )}
+                        {selectedPrompt.featured ? 'Remove Featured' : 'Mark as Featured'}
+                      </Button>
+                    )}
         </Card>
       </div>
     </div>

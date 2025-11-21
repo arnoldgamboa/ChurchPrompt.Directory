@@ -318,12 +318,13 @@ export const updatePrompt = mutation({
     content: v.optional(v.string()),
     category: v.optional(v.string()),
     tags: v.optional(v.array(v.string())),
+    featured: v.optional(v.boolean()),
   },
   handler: async ({ db, auth }, args) => {
     const identity = await auth.getUserIdentity();
     if (!identity) throw new Error("Authentication required");
 
-    const { promptId, title, content, category, tags } = args;
+    const { promptId, title, content, category, tags, featured } = args;
 
     const updates: any = {
       updatedAt: Date.now(),
@@ -332,6 +333,7 @@ export const updatePrompt = mutation({
     if (title !== undefined) updates.title = title;
     if (category !== undefined) updates.category = category;
     if (tags !== undefined) updates.tags = tags;
+    if (featured !== undefined) updates.featured = featured;
     
     if (content !== undefined) {
       updates.content = content;
