@@ -1,4 +1,4 @@
-import { internalMutation, internalAction } from "./_generated/server";
+import { internalMutation, internalAction, mutation } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 
@@ -201,5 +201,37 @@ export const seedAll = internalAction({
     await ctx.runMutation(internal.migrations.bulkInsertUsers, { users });
     await ctx.runMutation(internal.migrations.bulkInsertPrompts, { prompts });
     return { ok: true, counts: { categories: categories.length, users: users.length, prompts: prompts.length } };
+  },
+});
+
+export const removeDuplicatePrompts = mutation({
+  args: {},
+  handler: async ({ db }) => {
+    const allPrompts = await db.query("prompts").collect();
+    const seen = new Map<string, any>();
+    const toDelete: any[] = [];
+    
+    for (const prompt of allPrompts) {
+      const key = `${prompt.authorId}__${prompt.title}`;
+      if (seen.has(key)) {
+        // Keep the one with higher usageCount, or most recent createdAt
+        const existing = seen.get(key);
+        if (prompt.usageCount > existing.usageCount || 
+            (prompt.usageCount === existing.usageCount && prompt.createdAt > existing.createdAt)) {
+          toDelete.push(existing._id);
+          seen.set(key, prompt);
+        } else {
+          toDelete.push(prompt._id);
+        }
+      } else {
+        seen.set(key, prompt);
+      }
+    }
+    
+    for (const id of toDelete) {
+      await db.delete(id);
+    }
+    
+    return { deleted: toDelete.length, remaining: allPrompts.length - toDelete.length };
   },
 });
