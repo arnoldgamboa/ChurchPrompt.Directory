@@ -14,10 +14,24 @@ export const prerender = false;
 <MainLayout title="Admin Dashboard | Church Prompt Directory">
   <div class="container py-8">
     <div class="mb-8">
-      <h1 class="text-4xl font-bold mb-2">Admin Dashboard</h1>
-      <p class="text-lg text-muted-foreground">
-        Review and manage prompt submissions from the community.
-      </p>
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h1 class="text-4xl font-bold mb-2">Admin Dashboard</h1>
+          <p class="text-lg text-muted-foreground">
+            Review and manage prompt submissions from the community.
+          </p>
+        </div>
+        <a 
+          href="/admin/blogs" 
+          class="inline-flex items-center px-4 py-2 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+          Manage Blogs
+        </a>
+      </div>
     </div>
     
     <AdminDashboardWithProvider client:only="react" convexUrl={convexUrl} />

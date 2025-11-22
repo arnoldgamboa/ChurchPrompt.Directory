@@ -140,11 +140,11 @@ export const BlogDetail: React.FC<BlogDetailProps> = ({ slug }) => {
                   blockquote: ({node, ...props}) => (
                     <blockquote className="border-l-4 border-muted-foreground pl-4 italic my-4 text-muted-foreground" {...props} />
                   ),
-                  code: ({node, inline, ...props}: any) => 
+                  code: ({inline, className, children, ...props}: { inline?: boolean; className?: string; children?: React.ReactNode }) => 
                     inline ? (
-                      <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono" {...props} />
+                      <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono" {...props}>{children}</code>
                     ) : (
-                      <code className="block bg-muted p-4 rounded-lg overflow-x-auto text-sm font-mono my-4" {...props} />
+                      <code className="block bg-muted p-4 rounded-lg overflow-x-auto text-sm font-mono my-4" {...props}>{children}</code>
                     ),
                   pre: ({node, ...props}) => <pre className="bg-muted p-4 rounded-lg overflow-x-auto my-4" {...props} />,
                 }}

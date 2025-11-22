@@ -42,6 +42,7 @@ export const getPublishedBlogs = query({
 });
 
 // Query: Get blog by slug
+// Query: Get blog by slug (public - only published)
 export const getBlogBySlug = query({
   args: {
     slug: v.string(),
@@ -52,7 +53,12 @@ export const getBlogBySlug = query({
       .withIndex("by_slug", (q) => q.eq("slug", args.slug))
       .first();
 
-    return blog;
+    // Only return published blogs to public users
+    if (blog && blog.status === "published") {
+      return blog;
+    }
+
+    return null;
   },
 });
 

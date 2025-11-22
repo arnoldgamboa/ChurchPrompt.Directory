@@ -23,6 +23,15 @@ import {
 } from 'lucide-react';
 import { useAuth } from "@clerk/astro/react";
 
+// Type for Clerk session claims with metadata
+interface ClerkSessionClaims {
+  firstName?: string;
+  username?: string;
+  metadata?: {
+    role?: string;
+  };
+}
+
 export const AdminBlogs: React.FC = () => {
   const allBlogs = useQuery(api.blogs.getAllBlogs);
   const auth = useAuth();
@@ -53,7 +62,8 @@ export const AdminBlogs: React.FC = () => {
 
   const selectedBlog = allBlogs?.find(b => b._id === selectedBlogId);
   
-  const userName = (auth.sessionClaims as any)?.firstName || (auth.sessionClaims as any)?.username || 'Admin';
+  const sessionClaims = auth.sessionClaims as ClerkSessionClaims | null;
+  const userName = sessionClaims?.firstName || sessionClaims?.username || 'Admin';
   const userId = auth.userId || '';
 
   const handleSelectBlog = (blogId: Id<"blogs">) => {
