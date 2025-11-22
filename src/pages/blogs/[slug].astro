@@ -1,0 +1,23 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import { BlogDetailWithProvider } from '@/components/blogs/BlogDetailWithProvider';
+
+const convexUrl = import.meta.env.PUBLIC_CONVEX_URL;
+
+if (!convexUrl) {
+  throw new Error('PUBLIC_CONVEX_URL is not set');
+}
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+
+// We'll fetch the blog data client-side for now
+// In production, you might want to fetch server-side for better SEO
+const title = "Blog Post | Church Prompt Directory";
+const description = "Read our latest insights and tips for church ministry.";
+---
+
+<MainLayout title={title} description={description}>
+  <BlogDetailWithProvider client:only="react" convexUrl={convexUrl} slug={slug} />
+</MainLayout>
