@@ -8,6 +8,8 @@
     "start": "node ./dist/server/entry.mjs",
     "preview": "astro preview",
     "astro": "astro",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "convex:dev": "convex dev",
     "convex:deploy": "convex deploy",
     "migrate:seed": "node scripts/migrate.mjs"
