@@ -12,10 +12,13 @@ export const prerender = false;
 
 const { slug } = Astro.params;
 
-// Note: Currently using client-side data fetching for simplicity.
-// For better SEO and initial page load performance, consider implementing server-side
-// data fetching using Convex HTTP API to fetch blog metadata and pass it as props.
-// This would enable proper server-rendered meta tags and OG tags for social sharing.
+// Current implementation: Client-side data fetching with dynamic meta tag updates.
+// This approach works well for interactive content but has limitations for SEO and social sharing.
+// Future enhancement: Implement server-side data fetching using Convex HTTP API to enable:
+//   - Pre-rendered meta tags (better SEO)
+//   - Open Graph tags for social media previews
+//   - Faster initial page load
+// Track: Create GitHub issue for SSR implementation.
 const title = "Blog Post | Church Prompt Directory";
 const description = "Read our latest insights and tips for church ministry.";
 ---

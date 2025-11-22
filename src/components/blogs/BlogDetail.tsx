@@ -12,6 +12,13 @@ interface BlogDetailProps {
   slug: string;
 }
 
+// Type for markdown code component props
+interface CodeComponentProps {
+  inline?: boolean;
+  className?: string;
+  children?: React.ReactNode;
+}
+
 export const BlogDetail: React.FC<BlogDetailProps> = ({ slug }) => {
   const blog = useQuery(api.blogs.getBlogBySlug, { slug });
 
@@ -140,7 +147,7 @@ export const BlogDetail: React.FC<BlogDetailProps> = ({ slug }) => {
                   blockquote: ({node, ...props}) => (
                     <blockquote className="border-l-4 border-muted-foreground pl-4 italic my-4 text-muted-foreground" {...props} />
                   ),
-                  code: ({inline, className, children, ...props}: { inline?: boolean; className?: string; children?: React.ReactNode }) => 
+                  code: ({inline, className, children, ...props}: CodeComponentProps) => 
                     inline ? (
                       <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono" {...props}>{children}</code>
                     ) : (

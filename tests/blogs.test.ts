@@ -1,36 +1,37 @@
 import { describe, it, expect } from 'vitest';
 
+// Test data fixtures
+const VALID_SLUGS = [
+  'my-first-blog-post',
+  'welcome-to-our-ministry',
+  '10-tips-for-better-ai-prompts',
+  'how-to-use-chatgpt-in-church',
+];
+
+const INVALID_SLUGS = [
+  'My Blog Post',
+  'blog_post',
+  'blog post',
+  'BLOG-POST',
+  '-leading-dash',
+  'trailing-dash-',
+  'double--dash',
+];
+
 // Simple validation tests for blog functionality
 describe('Blog Schema Validation', () => {
   it('blog slug should be URL-friendly', () => {
-    const validSlugs = [
-      'my-first-blog-post',
-      'welcome-to-our-ministry',
-      '10-tips-for-better-ai-prompts',
-      'how-to-use-chatgpt-in-church',
-    ];
-    
     const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
     
-    validSlugs.forEach(slug => {
+    VALID_SLUGS.forEach(slug => {
       expect(slugPattern.test(slug)).toBe(true);
     });
   });
 
   it('invalid slugs should not match pattern', () => {
-    const invalidSlugs = [
-      'My Blog Post',
-      'blog_post',
-      'blog post',
-      'BLOG-POST',
-      '-leading-dash',
-      'trailing-dash-',
-      'double--dash',
-    ];
-    
     const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
     
-    invalidSlugs.forEach(slug => {
+    INVALID_SLUGS.forEach(slug => {
       expect(slugPattern.test(slug)).toBe(false);
     });
   });
