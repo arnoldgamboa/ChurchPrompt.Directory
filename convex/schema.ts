@@ -66,4 +66,25 @@ export default defineSchema({
   })
     .index("by_prompt", ["promptId"]) // execution stats
     .index("by_user", ["userId"]),
+
+  blogs: defineTable({
+    title: v.string(),
+    slug: v.string(), // URL-friendly identifier
+    content: v.string(), // Markdown content
+    excerpt: v.string(), // Brief description for listings and SEO
+    metaDescription: v.string(), // SEO meta description
+    metaKeywords: v.array(v.string()), // SEO keywords
+    authorId: v.string(), // Clerk user ID
+    authorName: v.string(),
+    tags: v.array(v.string()),
+    status: v.string(), // "draft" | "published"
+    featured: v.optional(v.boolean()),
+    publishedAt: v.optional(v.number()), // Unix epoch ms, set when status changes to published
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_slug", ["slug"]) // for URL lookups
+    .index("by_status", ["status"]) // for filtering published blogs
+    .index("by_author", ["authorId"]) // for author's blog listings
+    .index("by_published_at", ["publishedAt"]), // for sorting by publish date
 });

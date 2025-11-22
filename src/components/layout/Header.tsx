@@ -48,6 +48,9 @@ export default function Header({
               <a href="/directory" className={getLinkClasses("/directory")}>
                 Directory
               </a>
+              <a href="/blogs" className={getLinkClasses("/blogs")}>
+                Blog
+              </a>
               <a href="/submit" className={getLinkClasses("/submit")}>
                 Submit Prompt
               </a>
@@ -87,6 +90,9 @@ export default function Header({
               <a href="/directory" className={getLinkClasses("/directory")}>
                 Directory
               </a>
+              <a href="/blogs" className={getLinkClasses("/blogs")}>
+                Blog
+              </a>
               <a href="/subscribe" className={getLinkClasses("/subscribe")}>
                 Pricing
               </a>
@@ -122,6 +128,9 @@ export default function Header({
                 <a href="/directory" className={`${getLinkClasses("/directory")} py-2`}>
                   Directory
                 </a>
+                <a href="/blogs" className={`${getLinkClasses("/blogs")} py-2`}>
+                  Blog
+                </a>
                 <a href="/submit" className={`${getLinkClasses("/submit")} py-2`}>
                   Submit Prompt
                 </a>
@@ -144,6 +153,9 @@ export default function Header({
                 </a>
                 <a href="/directory" className={`${getLinkClasses("/directory")} py-2`}>
                   Directory
+                </a>
+                <a href="/blogs" className={`${getLinkClasses("/blogs")} py-2`}>
+                  Blog
                 </a>
                 <a href="/subscribe" className={`${getLinkClasses("/subscribe")} py-2`}>
                   Pricing
