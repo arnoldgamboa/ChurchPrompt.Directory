@@ -7,8 +7,8 @@ export const prerender = false;
 const convexUrl = import.meta.env.PUBLIC_CONVEX_URL;
 
 // SEO metadata
-const title = "Browse AI Prompts for Church Ministry | Church Prompt Directory";
-const description = "Explore our comprehensive directory of AI prompts designed specifically for church ministry, pastoral care, worship planning, and faith-based content creation. Discover, copy, and execute proven prompts used by church leaders worldwide.";
+const title = "AI Prompts for Church Ministry - Browse ChatGPT & AI Prompts | Church Prompt Directory";
+const description = "Discover 100+ AI prompts for churches. Get ChatGPT prompts for sermons, pastoral care, worship planning, and ministry. Free AI prompt library for pastors and church leaders. Copy and use proven AI prompts instantly.";
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 // Get query parameters for dynamic SEO
@@ -48,15 +48,15 @@ if (categoryParam && convexUrl) {
 
 // Dynamic title and description based on filters
 const dynamicTitle = categoryName 
-  ? `${categoryName} AI Prompts for Churches | Church Prompt Directory`
+  ? `${categoryName} AI Prompts - ChatGPT Prompts for ${categoryName} | Church Prompt Directory`
   : searchParam
-  ? `Search Results: "${searchParam}" | Church Prompt Directory`
+  ? `"${searchParam}" AI Prompts for Churches - Search Results | Church Prompt Directory`
   : title;
 
 const dynamicDescription = categoryName
-  ? `Discover AI prompts for ${categoryName.toLowerCase()} in church ministry. ${categoryDescription}`
+  ? `Explore ${categoryName.toLowerCase()} AI prompts for churches. Free ChatGPT and AI prompts for ${categoryName.toLowerCase()} ministry. ${categoryDescription} Copy and use instantly.`
   : searchParam
-  ? `Search results for "${searchParam}" in our directory of AI prompts for church ministry and pastoral care.`
+  ? `Find AI prompts for "${searchParam}" - Browse ChatGPT prompts and AI tools for church ministry, pastoral care, and faith-based content. Free prompt library.`
   : description;
 ---
 
@@ -80,9 +80,21 @@ const dynamicDescription = categoryName
     <meta name="twitter:description" content={dynamicDescription} />
     
     <!-- Additional SEO -->
-    <meta name="keywords" content="church AI prompts, ministry AI tools, pastoral care prompts, church content creation, worship planning AI, church leadership tools" />
-    <meta name="robots" content="index, follow" />
+    <meta name="keywords" content="AI prompts, church prompts, ChatGPT prompts for pastors, AI for churches, ministry AI prompts, sermon prompts, pastoral care AI, worship planning prompts, church AI tools, prompt library, prompt directory, AI prompt examples, free church prompts, ministry prompts, religious AI prompts, faith-based AI, church content AI, pastoral AI assistant, church communication prompts, church leadership AI" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <meta name="author" content="Church Prompt Directory" />
+    <meta http-equiv="content-language" content="en-US" />
+    <meta name="geo.region" content="US" />
+    <meta name="target" content="all" />
+    <meta name="audience" content="pastors, church leaders, ministry staff, worship leaders" />
+    
+    <!-- Additional Open Graph -->
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="Church Prompt Directory - AI Prompts for Ministry" />
+    
+    <!-- Additional Twitter -->
+    <meta name="twitter:creator" content="@ChurchPrompts" />
+    <meta name="twitter:site" content="@ChurchPrompts" />
     
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify({

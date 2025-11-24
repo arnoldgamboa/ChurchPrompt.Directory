@@ -15,8 +15,8 @@ if (!id) {
 
 // Fetch prompt data for SEO
 let promptData: any = null;
-let title = "Prompt Detail | Church Prompt Directory";
-let description = "View detailed information about this AI prompt for church ministry.";
+let title = "AI Prompt for Church Ministry | Church Prompt Directory";
+let description = "Discover this AI prompt for church ministry. Free ChatGPT prompt designed for pastors and church leaders. Copy and use this proven AI prompt instantly.";
 
 if (convexUrl) {
   try {
@@ -37,8 +37,9 @@ if (convexUrl) {
       promptData = result.value;
       
       if (promptData) {
-        title = `${promptData.title} | Church Prompt Directory`;
-        description = promptData.excerpt || promptData.content.substring(0, 155) + '...';
+        title = `${promptData.title} - AI Prompt for ${promptData.category} | Church Prompt Directory`;
+        const excerptText = promptData.excerpt || promptData.content.substring(0, 120);
+        description = `AI Prompt: ${excerptText}${excerptText.length >= 120 ? '...' : ''} Free ChatGPT prompt for church ${promptData.category.toLowerCase()}.`;
       }
     }
   } catch (error) {
@@ -78,9 +79,20 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         <meta name="twitter:description" content={description} />
         
         <!-- Additional SEO -->
-        <meta name="keywords" content={promptData.tags.join(', ')} />
-        <meta name="robots" content="index, follow" />
+        <meta name="keywords" content={`AI prompt, ${promptData.category} prompt, church AI, ChatGPT prompt, ministry AI, ${promptData.tags.join(', ')}, AI for churches, prompt example, free church prompt, ${promptData.category} AI tool`} />
+        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
         <meta name="author" content={promptData.authorName} />
+        <meta http-equiv="content-language" content="en-US" />
+        
+        <!-- Additional Open Graph -->
+        <meta property="og:locale" content="en_US" />
+        <meta property="article:publisher" content="Church Prompt Directory" />
+        
+        <!-- Additional Twitter -->
+        <meta name="twitter:label1" content="Category" />
+        <meta name="twitter:data1" content={promptData.category} />
+        <meta name="twitter:label2" content="Reading time" />
+        <meta name="twitter:data2" content="2 min read" />
         
         <!-- JSON-LD Structured Data -->
         <script type="application/ld+json" set:html={JSON.stringify({
