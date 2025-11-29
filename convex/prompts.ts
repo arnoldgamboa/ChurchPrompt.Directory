@@ -365,3 +365,16 @@ export const deletePrompt = mutation({
     return { success: true };
   },
 });
+
+// Query: Get all approved prompt IDs for static generation
+export const getAllPromptIds = query({
+  args: {},
+  handler: async ({ db }) => {
+    const prompts = await db
+      .query("prompts")
+      .withIndex("by_status", (q) => q.eq("status", "approved"))
+      .collect();
+    
+    return prompts.map((prompt) => ({ _id: prompt._id }));
+  },
+});
