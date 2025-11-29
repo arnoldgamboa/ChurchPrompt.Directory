@@ -1,0 +1,28 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import { BlogDetailWithProvider } from '@/components/blogs/BlogDetailWithProvider';
+
+const convexUrl = import.meta.env.PUBLIC_CONVEX_URL;
+
+if (!convexUrl) {
+  throw new Error('PUBLIC_CONVEX_URL is not set');
+}
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+
+// Current implementation: Client-side data fetching with dynamic meta tag updates.
+// This approach works well for interactive content but has limitations for SEO and social sharing.
+// Future enhancement: Implement server-side data fetching using Convex HTTP API to enable:
+//   - Pre-rendered meta tags (better SEO)
+//   - Open Graph tags for social media previews
+//   - Faster initial page load
+// Track: Create GitHub issue for SSR implementation.
+const title = "Blog Post | Church Prompt Directory";
+const description = "Read our latest insights and tips for church ministry.";
+---
+
+<MainLayout title={title} description={description}>
+  <BlogDetailWithProvider client:only="react" convexUrl={convexUrl} slug={slug} />
+</MainLayout>
