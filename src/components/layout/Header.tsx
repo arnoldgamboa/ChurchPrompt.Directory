@@ -54,9 +54,9 @@ export default function Header({
               <a href="/submit" className={getLinkClasses("/submit")}>
                 Submit Prompt
               </a>
-              <a href="/subscribe" className={getLinkClasses("/subscribe")}>
+              {/* <a href="/subscribe" className={getLinkClasses("/subscribe")}>
                 Pricing
-              </a>
+              </a> */}
               <a href="/profile" className={getLinkClasses("/profile")}>
                 Profile
               </a>
@@ -93,9 +93,9 @@ export default function Header({
               <a href="/blogs" className={getLinkClasses("/blogs")}>
                 Blog
               </a>
-              <a href="/subscribe" className={getLinkClasses("/subscribe")}>
+              {/* <a href="/subscribe" className={getLinkClasses("/subscribe")}>
                 Pricing
-              </a>
+              </a> */}
               <a href="/sign-in">
                 <Button variant="ghost" size="sm">
                   Login
@@ -134,9 +134,9 @@ export default function Header({
                 <a href="/submit" className={`${getLinkClasses("/submit")} py-2`}>
                   Submit Prompt
                 </a>
-                <a href="/subscribe" className={`${getLinkClasses("/subscribe")} py-2`}>
+                {/* <a href="/subscribe" className={`${getLinkClasses("/subscribe")} py-2`}>
                 Pricing
-              </a>
+              </a> */}
                 <a href="/profile" className={`${getLinkClasses("/profile")} py-2`}>
                   Profile
                 </a>
@@ -157,9 +157,9 @@ export default function Header({
                 <a href="/blogs" className={`${getLinkClasses("/blogs")} py-2`}>
                   Blog
                 </a>
-                <a href="/subscribe" className={`${getLinkClasses("/subscribe")} py-2`}>
+                {/* <a href="/subscribe" className={`${getLinkClasses("/subscribe")} py-2`}>
                   Pricing
-                </a>
+                </a> */}
               </>
             )}
             <div className="pt-3 border-t flex flex-col gap-2">
