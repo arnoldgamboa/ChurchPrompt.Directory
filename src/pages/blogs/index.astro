@@ -12,9 +12,17 @@ export const prerender = false;
 
 const title = "Blog | Church Prompt Directory";
 const description = "Explore insights, tips, and resources for creating better AI prompts for church ministry and spiritual growth.";
+const keywords = "church blog, ministry insights, AI prompts, pastoral care, spiritual growth, church technology";
+const canonicalUrl = `${Astro.site?.toString() || 'https://churchprompt.directory'}/blogs`;
 ---
 
-<MainLayout title={title} description={description}>
+<MainLayout 
+  title={title} 
+  description={description}
+  keywords={keywords}
+  canonicalUrl={canonicalUrl}
+  ogType="website"
+>
   <div class="container py-12">
     <div class="mb-12 text-center max-w-3xl mx-auto">
       <h1 class="text-4xl md:text-5xl font-bold mb-4">Blog</h1>

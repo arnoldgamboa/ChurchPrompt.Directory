@@ -2,12 +2,30 @@
 interface Props {
   title?: string;
   description?: string;
+  keywords?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  ogType?: string;
+  canonicalUrl?: string;
 }
 
 const {
   title = "Church Prompt Directory",
   description = "Discover, share, and utilize AI prompts for church ministry tasks",
+  keywords = "church, ministry, AI prompts, pastoral care, spiritual growth",
+  ogTitle,
+  ogDescription,
+  ogImage,
+  ogType = "website",
+  canonicalUrl,
 } = Astro.props;
+
+// Use og-specific values or fall back to standard meta values
+const finalOgTitle = ogTitle || title;
+const finalOgDescription = ogDescription || description;
+const finalOgImage = ogImage || `${Astro.site?.toString() || 'https://churchprompt.directory'}/og-image.png`;
+const finalCanonicalUrl = canonicalUrl || Astro.url.toString();
 ---
 
 <!doctype html>
@@ -15,10 +33,26 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={finalCanonicalUrl} />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={finalCanonicalUrl} />
+    <meta property="og:title" content={finalOgTitle} />
+    <meta property="og:description" content={finalOgDescription} />
+    <meta property="og:image" content={finalOgImage} />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={finalCanonicalUrl} />
+    <meta name="twitter:title" content={finalOgTitle} />
+    <meta name="twitter:description" content={finalOgDescription} />
+    <meta name="twitter:image" content={finalOgImage} />
     
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-KJ8FFWP84E"></script>

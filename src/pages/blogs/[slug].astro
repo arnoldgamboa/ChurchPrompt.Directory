@@ -1,6 +1,8 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
 import { BlogDetailWithProvider } from '@/components/blogs/BlogDetailWithProvider';
+import { fetchQuery } from "convex/nextjs";
+import { api } from "../../../convex/_generated/api";
 
 const convexUrl = import.meta.env.PUBLIC_CONVEX_URL;
 
@@ -12,17 +14,44 @@ export const prerender = false;
 
 const { slug } = Astro.params;
 
-// Current implementation: Client-side data fetching with dynamic meta tag updates.
-// This approach works well for interactive content but has limitations for SEO and social sharing.
-// Future enhancement: Implement server-side data fetching using Convex HTTP API to enable:
-//   - Pre-rendered meta tags (better SEO)
-//   - Open Graph tags for social media previews
-//   - Faster initial page load
-// Track: Create GitHub issue for SSR implementation.
-const title = "Blog Post | Church Prompt Directory";
-const description = "Read our latest insights and tips for church ministry.";
+// Server-side data fetching for SEO optimization
+let blog = null;
+let title = "Blog Post | Church Prompt Directory";
+let description = "Read our latest insights and tips for church ministry.";
+let keywords = "church, ministry, AI prompts, spiritual growth";
+let ogImage = "";
+let canonicalUrl = `${Astro.site?.toString() || 'https://churchprompt.directory'}/blogs/${slug}`;
+
+try {
+  // Fetch blog data on the server for SEO
+  blog = await fetchQuery(api.blogs.getBlogBySlug, { slug: slug || '' }, { url: convexUrl });
+  
+  if (blog) {
+    title = `${blog.title} | Church Prompt Directory`;
+    description = blog.metaDescription || blog.excerpt;
+    keywords = blog.metaKeywords.join(', ');
+    // Use featured image if available (you can add this field to schema later)
+    ogImage = blog.featuredImage || `${Astro.site?.toString() || 'https://churchprompt.directory'}/og-image.png`;
+  }
+} catch (error) {
+  console.error('Error fetching blog for SSR:', error);
+}
+
+// If blog not found, return 404
+if (!blog) {
+  return Astro.redirect('/404');
+}
 ---
 
-<MainLayout title={title} description={description}>
+<MainLayout 
+  title={title} 
+  description={description}
+  keywords={keywords}
+  ogTitle={title}
+  ogDescription={description}
+  ogImage={ogImage}
+  ogType="article"
+  canonicalUrl={canonicalUrl}
+>
   <BlogDetailWithProvider client:only="react" convexUrl={convexUrl} slug={slug} />
 </MainLayout>

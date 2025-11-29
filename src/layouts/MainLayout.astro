@@ -7,17 +7,38 @@ import "../styles/globals.css";
 interface Props {
   title?: string;
   description?: string;
+  keywords?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  ogType?: string;
+  canonicalUrl?: string;
 }
 
 const {
   title,
   description,
+  keywords,
+  ogTitle,
+  ogDescription,
+  ogImage,
+  ogType,
+  canonicalUrl,
 } = Astro.props;
 
 const currentPath = Astro.url.pathname;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout 
+  title={title} 
+  description={description}
+  keywords={keywords}
+  ogTitle={ogTitle}
+  ogDescription={ogDescription}
+  ogImage={ogImage}
+  ogType={ogType}
+  canonicalUrl={canonicalUrl}
+>
   <!-- Pass through additional head content -->
   <slot name="head" slot="head" />
   
