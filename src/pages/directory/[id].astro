@@ -4,7 +4,39 @@ import { PromptDetailWithProvider } from '@/components/prompts/PromptDetailWithP
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
-export const prerender = false;
+export async function getStaticPaths() {
+  const convexUrl = import.meta.env.PUBLIC_CONVEX_URL;
+  
+  if (!convexUrl) {
+    return [];
+  }
+  
+  try {
+    const response = await fetch(`${convexUrl}/api/query`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        path: 'prompts:getAllPromptIds',
+        args: {},
+        format: 'json',
+      }),
+    });
+    
+    if (response.ok) {
+      const result = await response.json();
+      const prompts = result.value || [];
+      return prompts.map((prompt: { _id: string }) => ({
+        params: { id: prompt._id },
+      }));
+    }
+  } catch (error) {
+    console.error('Error fetching prompts for static paths:', error);
+  }
+  
+  return [];
+}
 
 const { id } = Astro.params;
 const convexUrl = import.meta.env.PUBLIC_CONVEX_URL;

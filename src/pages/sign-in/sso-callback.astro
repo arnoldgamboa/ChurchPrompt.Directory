@@ -1,6 +1,8 @@
 ---
 import { AuthenticateWithRedirectCallback } from '@clerk/astro/react';
 import MainLayout from '@/layouts/MainLayout.astro';
+
+export const prerender = false;
 ---
 
 <MainLayout title="Signing you in..." description="Please wait while we sign you in">
