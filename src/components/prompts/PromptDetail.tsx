@@ -17,6 +17,7 @@ interface PromptDetailProps {
   onRun?: () => void;
   isSubscribed?: boolean;
   isFavorite?: boolean;
+  initialPrompt?: any; // build-time provided prompt data for SSG hydration
 }
 
 export default function PromptDetail({
@@ -25,6 +26,7 @@ export default function PromptDetail({
   onRun,
   isSubscribed = false,
   isFavorite = false,
+  initialPrompt,
 }: PromptDetailProps) {
   const [copied, setCopied] = useState(false);
   const [saved, setSaved] = useState(isFavorite);
@@ -39,13 +41,14 @@ export default function PromptDetail({
 
   // Fetch prompt data from Convex
   const prompt = useQuery(api.prompts.getPromptById, { id: promptId as any });
+  const effectivePrompt = prompt === undefined && initialPrompt ? initialPrompt : prompt;
   
   // Mutation for incrementing usage count
   const incrementUsage = useMutation(api.prompts.incrementUsageCount);
   const deletePrompt = useMutation(api.prompts.deletePrompt);
 
   const handleCopy = async () => {
-    if (!prompt) return;
+    if (!effectivePrompt) return;
     
     // Copy to clipboard
     await navigator.clipboard.writeText(prompt.content);
@@ -95,6 +98,13 @@ export default function PromptDetail({
   };
 
   // Loading state
+  if (prompt === undefined && initialPrompt) {
+    // Render immediately using initialPrompt while Convex hydrates
+    return (
+      <HydratedPromptView prompt={initialPrompt} copied={copied} saved={saved} onCopy={handleCopy} onSave={handleSave} onRun={handleRun} isSubscribed={isSubscribed} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} userIsAdmin={userIsAdmin} promptId={promptId} handleEdit={handleEdit} handleDelete={handleDelete} />
+    );
+  }
+
   if (prompt === undefined) {
     return (
       <div className="space-y-6">
@@ -112,7 +122,7 @@ export default function PromptDetail({
   }
 
   // Error state - prompt not found
-  if (prompt === null) {
+  if (effectivePrompt === null) {
     return (
       <Card className="p-8 text-center">
         <h2 className="text-2xl font-bold mb-2">Prompt Not Found</h2>
@@ -127,21 +137,44 @@ export default function PromptDetail({
   }
 
   // Format category for display
-  const categoryDisplay = prompt.category
+  const categoryDisplay = effectivePrompt.category
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 
   // Format date
-  const createdDate = new Date(prompt._creationTime).toLocaleDateString("en-US", {
+  const createdDate = new Date(effectivePrompt._creationTime).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
 
+  return <HydratedPromptView prompt={effectivePrompt} copied={copied} saved={saved} onCopy={handleCopy} onSave={handleSave} onRun={handleRun} isSubscribed={isSubscribed} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} userIsAdmin={userIsAdmin} promptId={promptId} handleEdit={handleEdit} handleDelete={handleDelete} createdDate={createdDate} />;
+}
+
+// Extracted view component for reuse with initialPrompt fallback
+function HydratedPromptView({
+  prompt,
+  copied,
+  saved,
+  onCopy,
+  onSave,
+  onRun,
+  isSubscribed,
+  isModalOpen,
+  setIsModalOpen,
+  userIsAdmin,
+  promptId,
+  handleEdit,
+  handleDelete,
+  createdDate,
+}: any) {
+  const categoryDisplay = prompt.category
+    .split("-")
+    .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
   return (
     <div className="space-y-6">
-      {/* Header - Full Width */}
       <div className="space-y-4" style={{ animation: 'slideUpFadeIn 0.6s ease-out' }}>
         <div className="flex items-center gap-2">
           <Badge variant="secondary">{categoryDisplay}</Badge>
@@ -150,100 +183,59 @@ export default function PromptDetail({
               Featured
             </Badge>
           )}
-          <span className="text-sm text-muted-foreground">
-            by {prompt.authorName}
-          </span>
+          <span className="text-sm text-muted-foreground">by {prompt.authorName}</span>
         </div>
-        <h1 className="text-3xl font-bold tracking-tight lg:text-4xl">
-          {prompt.title}
-        </h1>
+        <h1 className="text-3xl font-bold tracking-tight lg:text-4xl">{prompt.title}</h1>
       </div>
-
-      {/* Two Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column - Main Content (2/3 width) */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Content */}
           <div style={{ animation: 'slideUpFadeIn 0.6s ease-out 0.2s both' }}>
             <Card>
               <CardContent className="pt-6">
                 <div className="prose prose-slate max-w-none">
                   <h3 className="text-lg font-semibold mb-3">Prompt Content</h3>
-                  <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed bg-muted p-4 rounded-lg">
-                    {prompt.content}
-                  </pre>
+                  <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed bg-muted p-4 rounded-lg">{prompt.content}</pre>
                 </div>
               </CardContent>
             </Card>
           </div>
-
-          {/* Tags */}
           {prompt.tags.length > 0 && (
             <div className="space-y-3" style={{ animation: 'slideUpFadeIn 0.6s ease-out 0.3s both' }}>
               <h3 className="text-sm font-semibold">Tags</h3>
               <div className="flex flex-wrap gap-2">
-                {prompt.tags.map((tag) => (
-                  <Badge key={tag} variant="outline">
-                    {tag}
-                  </Badge>
+                {prompt.tags.map((tag: string) => (
+                  <Badge key={tag} variant="outline">{tag}</Badge>
                 ))}
               </div>
             </div>
           )}
         </div>
-
-        {/* Right Column - Actions & Info (1/3 width) */}
         <div className="space-y-4">
-          {/* Quick Action Buttons - Icon buttons */}
           <TooltipProvider>
             <Card className="p-4" style={{ animation: 'slideUpFadeIn 0.6s ease-out 0.1s both' }}>
               <div className="space-y-2">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button 
-                      onClick={handleCopy} 
-                      variant="ghost" 
-                      size="sm"
-                      className="w-full justify-start text-sm"
-                    >
+                    <Button onClick={onCopy} variant="ghost" size="sm" className="w-full justify-start text-sm">
                       <Copy className="mr-3 h-4 w-4" />
-                      {copied ? "Copied!" : "Copy to Clipboard"}
+                      {copied ? 'Copied!' : 'Copy to Clipboard'}
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Copy prompt to clipboard</TooltipContent>
                 </Tooltip>
-                
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button 
-                      onClick={handleSave} 
-                      variant="ghost" 
-                      size="sm"
-                      className="w-full justify-start text-sm"
-                    >
-                      <Heart
-                        className={`mr-3 h-4 w-4 ${
-                          saved ? "fill-red-500 text-red-500" : ""
-                        }`}
-                      />
-                      {saved ? "Remove from Favorites" : "Save to Favorites"}
+                    <Button onClick={onSave} variant="ghost" size="sm" className="w-full justify-start text-sm">
+                      <Heart className={`mr-3 h-4 w-4 ${saved ? 'fill-red-500 text-red-500' : ''}`} />
+                      {saved ? 'Remove from Favorites' : 'Save to Favorites'}
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>
-                    {saved ? "Remove from favorites" : "Save to favorites"}
-                  </TooltipContent>
+                  <TooltipContent>{saved ? 'Remove from favorites' : 'Save to favorites'}</TooltipContent>
                 </Tooltip>
-                
                 {isSubscribed ? (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button 
-                        disabled
-                        variant="ghost" 
-                        size="sm"
-                        className="w-full justify-start text-sm text-primary cursor-not-allowed"
-                        aria-disabled="true"
-                      >
+                      <Button disabled variant="ghost" size="sm" className="w-full justify-start text-sm text-primary cursor-not-allowed" aria-disabled="true">
                         <Play className="mr-3 h-4 w-4" />
                         Run with AI
                       </Button>
@@ -253,12 +245,7 @@ export default function PromptDetail({
                 ) : (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button 
-                        asChild 
-                        variant="ghost" 
-                        size="sm"
-                        className="w-full justify-start text-sm text-primary"
-                      >
+                      <Button asChild variant="ghost" size="sm" className="w-full justify-start text-sm text-primary">
                         <a href="/subscribe">
                           <Play className="mr-3 h-4 w-4" />
                           Upgrade to Run
@@ -271,8 +258,6 @@ export default function PromptDetail({
               </div>
             </Card>
           </TooltipProvider>
-
-          {/* Admin Actions */}
           {userIsAdmin && (
             <TooltipProvider>
               <Card className="p-4 border-orange-200 bg-orange-50/50">
@@ -280,27 +265,16 @@ export default function PromptDetail({
                   <p className="text-xs font-semibold text-orange-900 px-2">Admin Tools</p>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={handleEdit}
-                        className="w-full justify-start text-sm"
-                      >
+                      <Button variant="ghost" size="sm" onClick={handleEdit} className="w-full justify-start text-sm">
                         <Edit className="mr-3 h-4 w-4" />
                         Edit Prompt
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>Edit this prompt</TooltipContent>
                   </Tooltip>
-                  
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={handleDelete}
-                        className="w-full justify-start text-sm text-destructive hover:text-destructive"
-                      >
+                      <Button variant="ghost" size="sm" onClick={handleDelete} className="w-full justify-start text-sm text-destructive hover:text-destructive">
                         <Trash2 className="mr-3 h-4 w-4" />
                         Delete Prompt
                       </Button>
@@ -311,8 +285,6 @@ export default function PromptDetail({
               </Card>
             </TooltipProvider>
           )}
-
-          {/* Stats Card */}
           <Card className="p-4" style={{ animation: 'slideUpFadeIn 0.6s ease-out 0.2s both' }}>
             <div className="space-y-3 text-sm">
               <div>
@@ -340,24 +312,13 @@ export default function PromptDetail({
               </div>
             </div>
           </Card>
-
-          {/* Usage Instructions */}
           <Card className="p-4 border-dashed bg-muted/20" style={{ animation: 'slideUpFadeIn 0.6s ease-out 0.3s both' }}>
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Quick Tip</h3>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Replace bracketed placeholders with your specific details before using.
-            </p>
+            <p className="text-xs text-muted-foreground leading-relaxed">Replace bracketed placeholders with your specific details before using.</p>
           </Card>
         </div>
       </div>
-
-      {/* Execution Modal */}
-      <ExecutionModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        promptTitle={prompt.title}
-        promptContent={prompt.content}
-      />
+      <ExecutionModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} promptTitle={prompt.title} promptContent={prompt.content} />
     </div>
   );
 }

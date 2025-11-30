@@ -21,7 +21,7 @@ export interface Prompt {
   updatedAt: string;
 }
 
-export const DirectoryContent: React.FC = () => {
+export const DirectoryContent: React.FC<{ initialPrompts?: any[]; initialBootData?: DirectoryBootData | null }> = ({ initialPrompts, initialBootData }) => {
   const BOOT_CACHE_KEY = 'directoryBootData';
   const BOOT_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes freshness
   const [searchQuery, setSearchQuery] = useState('');
@@ -67,9 +67,9 @@ export const DirectoryContent: React.FC = () => {
   });
 
   // Loading and error states
-  const effectiveBoot = bootData || cachedBootData || null;
-  const isLoading = prompts === undefined || !effectiveBoot;
-  const promptList = prompts || [];
+  const effectiveBoot = bootData || cachedBootData || initialBootData || null;
+  const isLoading = prompts === undefined && !initialPrompts || !effectiveBoot;
+  const promptList = prompts === undefined && initialPrompts ? initialPrompts : (prompts || []);
   const newestList = effectiveBoot?.recentPrompts || [];
   const categories: Category[] = effectiveBoot?.categories?.map(cat => ({
     id: cat.categoryId,

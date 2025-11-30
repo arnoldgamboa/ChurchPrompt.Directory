@@ -1,6 +1,7 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
 import { DirectoryWithProvider } from '@/components/directory/DirectoryWithProvider';
+export const prerender = true;
 
 const convexUrl = import.meta.env.PUBLIC_CONVEX_URL;
 
@@ -127,9 +128,33 @@ const dynamicDescription = categoryName
   </Fragment>
 
   <div class="container py-8">
-    <DirectoryWithProvider 
-      client:only="react"
-      convexUrl={convexUrl}
-    />
+    {convexUrl ? (
+      // Fetch initial data at build time for hydration
+      await (async () => {
+        try {
+          const approvedRes = await fetch(`${convexUrl}/api/query`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ path: 'prompts:getApprovedPrompts', args: { limit: 200 }, format: 'json' }),
+          });
+          const bootRes = await fetch(`${convexUrl}/api/query`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ path: 'directory:getDirectoryBootData', args: {}, format: 'json' }),
+          });
+          const approvedJson = approvedRes.ok ? await approvedRes.json() : { value: [] };
+          const bootJson = bootRes.ok ? await bootRes.json() : { value: null };
+          const initialPrompts = approvedJson.value || [];
+          const initialBootData = bootJson.value || null;
+          return (
+            <DirectoryWithProvider client:load convexUrl={convexUrl} initialPrompts={initialPrompts} initialBootData={initialBootData} />
+          );
+        } catch (e) {
+          return (<DirectoryWithProvider client:load convexUrl={convexUrl} />);
+        }
+      })()
+    ) : (
+      <DirectoryWithProvider client:load convexUrl={convexUrl} />
+    )}
   </div>
 </MainLayout>

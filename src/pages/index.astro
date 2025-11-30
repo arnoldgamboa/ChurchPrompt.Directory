@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 const convexUrl = import.meta.env.PUBLIC_CONVEX_URL;
+export const prerender = true;
 
 // Fetch categories from Convex
 let categories: any[] = [];
@@ -146,7 +147,24 @@ const iconMap: Record<string, any> = {
         </p>
       </div>
       
-      <FeaturedPrompts client:only="react" convexUrl={convexUrl} />
+      {convexUrl ? (
+        await (async () => {
+          try {
+            const response = await fetch(`${convexUrl}/api/query`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ path: 'prompts:getApprovedPrompts', args: { limit: 12 }, format: 'json' }),
+            });
+            const json = response.ok ? await response.json() : { value: [] };
+            const initialPrompts = (json.value || []).filter((p: any) => p.featured).slice(0, 6);
+            return (<FeaturedPrompts client:load convexUrl={convexUrl} initialPrompts={initialPrompts} />);
+          } catch (e) {
+            return (<FeaturedPrompts client:load convexUrl={convexUrl} />);
+          }
+        })()
+      ) : (
+        <FeaturedPrompts client:load convexUrl={convexUrl} />
+      )}
 
       <div class="text-center mt-12">
         <Button size="lg" variant="outline" asChild>

@@ -7,13 +7,15 @@ interface PromptDetailWithProviderProps {
   promptId: string;
   isSubscribed: boolean;
   isFavorite: boolean;
+  initialPrompt?: any;
 }
 
 export function PromptDetailWithProvider({ 
   convexUrl, 
   promptId, 
   isSubscribed, 
-  isFavorite 
+  isFavorite,
+  initialPrompt,
 }: PromptDetailWithProviderProps) {
   return (
     <ConvexClientProvider convexUrl={convexUrl}>
@@ -22,6 +24,7 @@ export function PromptDetailWithProvider({
           promptId={promptId} 
           isSubscribed={isSubscribed} 
           isFavorite={isFavorite} 
+          initialPrompt={initialPrompt}
         />
       </AnonymousViewGuard>
     </ConvexClientProvider>

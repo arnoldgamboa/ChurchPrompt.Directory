@@ -5,22 +5,24 @@ import PromptGrid from "./PromptGrid";
 
 interface FeaturedPromptsProps {
   convexUrl: string;
+  initialPrompts?: any[];
 }
 
-function FeaturedPromptsContent() {
+function FeaturedPromptsContent({ initialPrompts }: { initialPrompts?: any[] }) {
   // Fetch featured prompts from Convex
   const prompts = useQuery(api.prompts.getApprovedPrompts, { limit: 6 });
   
   // Filter for featured prompts
-  const featuredPrompts = prompts?.filter((p: any) => p.featured) || [];
+  const source = prompts === undefined && initialPrompts ? initialPrompts : (prompts || []);
+  const featuredPrompts = source.filter((p: any) => p.featured).slice(0, 6);
 
   return <PromptGrid prompts={featuredPrompts} />;
 }
 
-export function FeaturedPrompts({ convexUrl }: FeaturedPromptsProps) {
+export function FeaturedPrompts({ convexUrl, initialPrompts }: FeaturedPromptsProps) {
   return (
     <ConvexClientProvider convexUrl={convexUrl}>
-      <FeaturedPromptsContent />
+      <FeaturedPromptsContent initialPrompts={initialPrompts} />
     </ConvexClientProvider>
   );
 }
