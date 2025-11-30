@@ -55,14 +55,27 @@ const finalCanonicalUrl = canonicalUrl || Astro.url.toString();
     <meta name="twitter:image" content={finalOgImage} />
     
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KJ8FFWP84E"></script>
     <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-KJ8FFWP84E', {
-        page_path: window.location.pathname,
-      });
+      // Only load Google Analytics in production (not on localhost or development domains)
+      const isProduction = window.location.hostname !== 'localhost' && 
+                          window.location.hostname !== '127.0.0.1' && 
+                          !window.location.hostname.includes('.local');
+      
+      if (isProduction) {
+        // Load gtag script
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-KJ8FFWP84E';
+        document.head.appendChild(script);
+        
+        // Initialize gtag
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-KJ8FFWP84E', {
+          page_path: window.location.pathname,
+        });
+      }
     </script>
     
     <!-- Additional head content from child layouts -->
