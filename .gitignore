@@ -1,5 +1,5 @@
 # build output
-dist/
+# dist/  # Uncomment only for static-only sites; server mode needs dist/ committed for Dokploy
 # generated types
 .astro/
 
