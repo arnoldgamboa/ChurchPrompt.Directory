@@ -15,9 +15,6 @@ export default defineConfig({
   },
   adapter: node({ 
     mode: 'standalone',
-    prerender: {
-      fallbackType: '404'
-    }
   }),
   integrations: [
     react(),
